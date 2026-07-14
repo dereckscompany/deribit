@@ -1,0 +1,42 @@
+{
+  "template": "https://github.com/dereckscompany/templates-cookiecutter.git",
+  "commit": "d4ee37f227cb2fb41b935aa6a6f3c1d8e84eed0f",
+  "checkout": "d4ee37f227cb2fb41b935aa6a6f3c1d8e84eed0f",
+  "context": {
+    "cookiecutter": {
+      "package_name": "deribit",
+      "repo_name": "deribit",
+      "package_title": "API Wrapper to the Deribit Crypto Derivatives Exchange",
+      "description": "R API wrapper to the Deribit crypto options and derivatives exchange, supporting both synchronous and asynchronous (promise based) operations. Provides an R6 market-data client for the public JSON-RPC endpoints (instruments, ticker, order book, index price, DVOL volatility index, funding rates, trades, and option-chain book summaries), built on the shared connectcore transport base.",
+      "author_given": "Dereck",
+      "author_family": "Mezquita",
+      "author_email": "dereck@mezquita.io",
+      "author_orcid": "0000-0002-9307-6762",
+      "github_org": "dereckscompany",
+      "license": "MIT",
+      "use_rcpp": false,
+      "_copy_without_render": [
+        "renv/*",
+        "renv.lock",
+        "scripts/*"
+      ],
+      "_template": "https://github.com/dereckscompany/templates-cookiecutter.git",
+      "_commit": "d4ee37f227cb2fb41b935aa6a6f3c1d8e84eed0f"
+    }
+  },
+  "directory": "template-r-package",
+  "skip": [
+    "R/**",
+    "src/**",
+    "man/**",
+    "tests/testthat/**",
+    "vignettes/**",
+    "DESCRIPTION",
+    "NAMESPACE",
+    "_pkgdown.yml",
+    "README.Rmd",
+    "inst/WORDLIST",
+    "renv/**",
+    "renv.lock"
+  ]
+}
