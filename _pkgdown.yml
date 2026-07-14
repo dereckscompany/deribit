@@ -5,7 +5,7 @@ template:
 
 navbar:
   structure:
-    left: [intro, reference, articles]
+    left: [reference]
     right: [search, github]
   components:
     github:
@@ -14,13 +14,19 @@ navbar:
       aria-label: GitHub repository
 
 reference:
-  - title: R Functions
-    desc: Pure R functions
+  - title: Market-data client
+    desc: The public JSON-RPC market-data client.
     contents:
-      - add
-
-articles:
-  - title: Getting Started
-    navbar: ~
+      - DeribitMarketData
+  - title: Configuration and vocabulary
+    desc: The base-URL getter and the endpoint vocabularies.
     contents:
-      - demo
+      - deribit_base_url
+      - INSTRUMENT_KIND
+      - DVOL_RESOLUTIONS
+      - TRADE_SORTING
+  - title: Conditions and shapes
+    desc: The typed condition family and the documented return shapes.
+    contents:
+      - deribit_conditions
+      - deribit_shapes

@@ -1,0 +1,53 @@
+{
+  "jsonrpc": "2.0",
+  "result": [
+    {
+      "high": 0.0039,
+      "low": 0.0027,
+      "last": 0.0027,
+      "interest_rate": 0.0,
+      "instrument_name": "BTC-31JUL26-40000-P",
+      "bid_price": 0.0024,
+      "ask_price": 0.0028,
+      "open_interest": 395.0,
+      "mark_price": 0.0026,
+      "creation_timestamp": 1700000000000,
+      "price_change": -28.9,
+      "volume": 3.6,
+      "mark_iv": 55.7,
+      "underlying_price": 50000.0,
+      "underlying_index": "BTC-31JUL26",
+      "base_currency": "BTC",
+      "quote_currency": "BTC",
+      "estimated_delivery_price": 50000.0,
+      "volume_usd": 775.9,
+      "mid_price": 0.0026
+    },
+    {
+      "high": 0.0015,
+      "low": 0.0001,
+      "last": 0.0001,
+      "interest_rate": 0.0,
+      "instrument_name": "BTC-31JUL26-60000-C",
+      "bid_price": null,
+      "ask_price": 0.0002,
+      "open_interest": 168.6,
+      "mark_price": 0.00006,
+      "creation_timestamp": 1700000000000,
+      "price_change": null,
+      "volume": 0.0,
+      "mark_iv": 78.5,
+      "underlying_price": 50000.0,
+      "underlying_index": "index_price",
+      "base_currency": "BTC",
+      "quote_currency": "BTC",
+      "estimated_delivery_price": 50000.0,
+      "volume_usd": 0.0,
+      "mid_price": null
+    }
+  ],
+  "usIn": 1700000000000000,
+  "usOut": 1700000000000100,
+  "usDiff": 100,
+  "testnet": false
+}

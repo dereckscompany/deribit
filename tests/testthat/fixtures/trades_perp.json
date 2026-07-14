@@ -1,0 +1,39 @@
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "has_more": true,
+    "trades": [
+      {
+        "timestamp": 1700000000000,
+        "price": 50010.0,
+        "amount": 1040.0,
+        "instrument_name": "BTC-PERPETUAL",
+        "direction": "sell",
+        "index_price": 50000.0,
+        "trade_seq": 1000001,
+        "mark_price": 50005.0,
+        "tick_direction": 1,
+        "contracts": 104.0,
+        "trade_id": "SYN-1"
+      },
+      {
+        "timestamp": 1700000001000,
+        "price": 50011.0,
+        "amount": 500.0,
+        "instrument_name": "BTC-PERPETUAL",
+        "direction": "buy",
+        "index_price": 50000.5,
+        "trade_seq": 1000002,
+        "mark_price": 50005.5,
+        "tick_direction": 0,
+        "contracts": 50.0,
+        "trade_id": "SYN-2",
+        "liquidation": "M"
+      }
+    ]
+  },
+  "usIn": 1700000000000000,
+  "usOut": 1700000000000100,
+  "usDiff": 100,
+  "testnet": false
+}

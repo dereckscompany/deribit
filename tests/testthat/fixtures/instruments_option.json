@@ -1,0 +1,64 @@
+{
+  "jsonrpc": "2.0",
+  "result": [
+    {
+      "state": "open",
+      "price_index": "btc_usd",
+      "kind": "option",
+      "instrument_name": "BTC-31JUL26-50000-C",
+      "maker_commission": 0.0003,
+      "taker_commission": 0.0003,
+      "instrument_type": "reversed",
+      "expiration_timestamp": 1785484800000,
+      "is_active": true,
+      "underlying_type": "crypto",
+      "creation_timestamp": 1600000000000,
+      "instrument_id": 200001,
+      "tick_size": 0.0001,
+      "contract_size": 1.0,
+      "strike": 50000.0,
+      "base_currency": "BTC",
+      "quote_currency": "BTC",
+      "settlement_currency": "BTC",
+      "option_type": "call",
+      "min_trade_amount": 0.1,
+      "settlement_period": "month",
+      "counter_currency": "USD",
+      "tick_size_steps": [
+        {
+          "tick_size": 0.0005,
+          "above_price": 0.005
+        }
+      ]
+    },
+    {
+      "state": "open",
+      "price_index": "btc_usd",
+      "kind": "option",
+      "instrument_name": "BTC-31JUL26-40000-P",
+      "maker_commission": 0.0003,
+      "taker_commission": 0.0003,
+      "instrument_type": "reversed",
+      "expiration_timestamp": 1785484800000,
+      "is_active": true,
+      "underlying_type": "crypto",
+      "creation_timestamp": 1600000000000,
+      "instrument_id": 200002,
+      "tick_size": 0.0001,
+      "contract_size": 1.0,
+      "strike": 40000.0,
+      "base_currency": "BTC",
+      "quote_currency": "BTC",
+      "settlement_currency": "BTC",
+      "option_type": "put",
+      "min_trade_amount": 0.1,
+      "settlement_period": "month",
+      "counter_currency": "USD",
+      "tick_size_steps": []
+    }
+  ],
+  "usIn": 1700000000000000,
+  "usOut": 1700000000000100,
+  "usDiff": 100,
+  "testnet": false
+}

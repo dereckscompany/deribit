@@ -1,0 +1,42 @@
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "timestamp": 1700000000000,
+    "instrument_name": "BTC-PERPETUAL",
+    "change_id": 987654321,
+    "bids": [
+      [
+        50004.0,
+        2000.0
+      ],
+      [
+        50003.5,
+        1500.0
+      ],
+      [
+        50003.0,
+        1000.0
+      ]
+    ],
+    "asks": [
+      [
+        50006.0,
+        800.0
+      ],
+      [
+        50006.5,
+        1200.0
+      ]
+    ],
+    "best_bid_price": 50004.0,
+    "best_ask_price": 50006.0,
+    "mark_price": 50005.0,
+    "index_price": 50000.0,
+    "open_interest": 123456780,
+    "state": "open"
+  },
+  "usIn": 1700000000000000,
+  "usOut": 1700000000000100,
+  "usDiff": 100,
+  "testnet": false
+}

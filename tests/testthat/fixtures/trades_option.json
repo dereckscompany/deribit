@@ -1,0 +1,25 @@
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "has_more": false,
+    "trades": [
+      {
+        "timestamp": 1700000000000,
+        "price": 0.12,
+        "amount": 5.0,
+        "instrument_name": "BTC-31JUL26-50000-C",
+        "direction": "buy",
+        "index_price": 50000.0,
+        "trade_seq": 2000001,
+        "mark_price": 0.121,
+        "iv": 60.5,
+        "tick_direction": 2,
+        "trade_id": "SYN-OPT-1"
+      }
+    ]
+  },
+  "usIn": 1700000000000000,
+  "usOut": 1700000000000100,
+  "usDiff": 100,
+  "testnet": false
+}

@@ -33,6 +33,7 @@
     "vignettes/**",
     "DESCRIPTION",
     "NAMESPACE",
+    ".lintr",
     "_pkgdown.yml",
     "README.Rmd",
     "inst/WORDLIST",

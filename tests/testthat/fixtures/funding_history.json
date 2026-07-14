@@ -1,0 +1,30 @@
+{
+  "jsonrpc": "2.0",
+  "result": [
+    {
+      "timestamp": 1700000000000,
+      "index_price": 50000.0,
+      "interest_8h": 0.00004,
+      "interest_1h": 0.0000015,
+      "prev_index_price": 49900.0
+    },
+    {
+      "timestamp": 1700003600000,
+      "index_price": 50100.0,
+      "interest_8h": 0.00003,
+      "interest_1h": 0.0000012,
+      "prev_index_price": 50000.0
+    },
+    {
+      "timestamp": 1700007200000,
+      "index_price": 50050.0,
+      "interest_8h": 0.00005,
+      "interest_1h": 0.0000018,
+      "prev_index_price": 50100.0
+    }
+  ],
+  "usIn": 1700000000000000,
+  "usOut": 1700000000000100,
+  "usDiff": 100,
+  "testnet": false
+}
