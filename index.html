@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">deribit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,12 +32,6 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/demo.html">Demonstrating deribit</a></li>
-  </ul>
-</li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -51,8 +45,162 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9">
-R API wrapper to the Deribit crypto options and derivatives exchange, supporting both synchronous and asynchronous (promise based) operations. Provides an R6 market-data client for the public JSON-RPC endpoints (instruments, ticker, order book, index price, DVOL volatility index, funding rates, trades, and option-chain book summaries), built on the shared connectcore transport base.
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header"><h1 id="deribit">deribit<a class="anchor" aria-label="anchor" href="#deribit"></a>
+</h1></div>
+<p>R API wrapper to the <a href="https://www.deribit.com" class="external-link">Deribit</a> crypto options and derivatives exchange, supporting both synchronous and asynchronous (promise based) operations. Provides an R6 market-data client for the public JSON-RPC endpoints — instruments, ticker, order book, index price, DVOL volatility index, funding rates, trades, and option-chain book summaries — built on the shared <a href="https://github.com/dereckscompany/connectcore" class="external-link">connectcore</a> transport base.</p>
+<div class="section level2">
+<h2 id="what-this-is">What this is<a class="anchor" aria-label="anchor" href="#what-this-is"></a>
+</h2>
+<p>Deribit is where the crypto <strong>options</strong> market lives — the deepest venue for BTC and ETH options, the perpetual and dated futures alongside them, and the <strong>DVOL</strong> volatility index that the whole desk watches as a regime dial. This package gives you Deribit’s public market data as tidy <code>data.table</code>s: the instrument universe, live quotes and order books, DVOL candles, perpetual funding, recent trades, and the full option-chain snapshot.</p>
+<p>It is a faithful, low-level wrapper: it speaks Deribit’s JSON-RPC 2.0 wire format and returns clean tables, preserving the venue’s own field names (only snake_cased), but it does not editorialise the data. <strong>Phase 1 is public market data only</strong> — there is no trading and no authenticated surface, and the public endpoints need no API key.</p>
+</div>
+<div class="section level2">
+<h2 id="design-philosophy">Design philosophy<a class="anchor" aria-label="anchor" href="#design-philosophy"></a>
+</h2>
+<ul>
+<li>
+<strong><code>data.table</code> everywhere, no list columns.</strong> Every method returns one flat <code>data.table</code>; measurement columns (and any field legitimately absent for a given instrument kind — an option’s greeks, a perpetual’s funding, a null bid) are typed nullable, structural columns strict.</li>
+<li>
+<strong>Sync and async.</strong> Every request-making surface works in both modes. <code>async = TRUE</code> returns a [promise][promises::promise]; otherwise the table is returned directly. There is a single sync/async branch point (inherited from <code>connectcore</code>).</li>
+<li>
+<strong>Faithful field names.</strong> Venue-native names are preserved and only snake_cased; nested objects (a ticker’s <code>stats</code>/<code>greeks</code>) are flattened with the parent field as a prefix (<code>stats_high</code>, <code>greeks_delta</code>).</li>
+<li>
+<strong>Typed errors.</strong> Every failure is a classed condition (<code>deribit_api_error</code>, <code>deribit_validation_error</code>) carrying structured fields — you branch on the type, never grep the message.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>This project uses <a href="https://rstudio.github.io/renv/" class="external-link"><code>renv</code></a>. Add <code>deribit</code> to your lockfile and restore:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"dereckscompany/deribit"</span><span class="op">)</span></span>
+<span><span class="co"># or, without renv:</span></span>
+<span><span class="co"># remotes::install_github("dereckscompany/deribit")</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="the-instrument-universe">The instrument universe<a class="anchor" aria-label="anchor" href="#the-instrument-universe"></a>
+</h2>
+<p>Every method hangs off one client. The public endpoints need no key, so construction takes no credential.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">md</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/DeribitMarketData.html">DeribitMarketData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">options</span> <span class="op">&lt;-</span> <span class="va">md</span><span class="op">$</span><span class="fu">get_instruments</span><span class="op">(</span><span class="st">"BTC"</span>, kind <span class="op">=</span> <span class="st">"option"</span><span class="op">)</span></span>
+<span><span class="va">options</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">instrument_name</span>, <span class="va">option_type</span>, <span class="va">strike</span>, <span class="va">expiration_datetime</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co">#&gt;        instrument_name option_type strike expiration_datetime</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt;                 &lt;char&gt;      &lt;char&gt;  &lt;num&gt;              &lt;POSc&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; 1: BTC-31JUL26-40000-P         put  40000 2026-07-31 08:00:00</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; 2: BTC-31JUL26-50000-C        call  50000 2026-07-31 08:00:00</span></span></code></pre></div>
+<p><code>get_currencies()</code> lists the settlement currencies, and <code>kind</code> filters the universe (<code>"future"</code>, <code>"option"</code>, <code>"spot"</code>, <code>"future_combo"</code>, <code>"option_combo"</code>).</p>
+</div>
+<div class="section level2">
+<h2 id="live-quotes">Live quotes<a class="anchor" aria-label="anchor" href="#live-quotes"></a>
+</h2>
+<p>The ticker combines the 24h stats, the top of book, and — for options — the greeks and implied volatility, flattened into one row:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">perp</span> <span class="op">&lt;-</span> <span class="va">md</span><span class="op">$</span><span class="fu">get_ticker</span><span class="op">(</span><span class="st">"BTC-PERPETUAL"</span><span class="op">)</span></span>
+<span><span class="va">perp</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">instrument_name</span>, <span class="va">mark_price</span>, <span class="va">index_price</span>, <span class="va">current_funding</span>, <span class="va">funding_8h</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co">#&gt;    instrument_name mark_price index_price current_funding funding_8h</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt;             &lt;char&gt;      &lt;num&gt;       &lt;num&gt;           &lt;num&gt;      &lt;num&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; 1:   BTC-PERPETUAL      50005       50000               0      2e-05</span></span></code></pre></div>
+<p>The order book comes back long — one row per price level, bids then asks:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">md</span><span class="op">$</span><span class="fu">get_order_book</span><span class="op">(</span><span class="st">"BTC-PERPETUAL"</span>, depth <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co">#&gt;    instrument_name            datetime   side level   price amount</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt;             &lt;char&gt;              &lt;POSc&gt; &lt;char&gt; &lt;int&gt;   &lt;num&gt;  &lt;num&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; 1:   BTC-PERPETUAL 2023-11-14 22:13:20    bid     1 50004.0   2000</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; 2:   BTC-PERPETUAL 2023-11-14 22:13:20    bid     2 50003.5   1500</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; 3:   BTC-PERPETUAL 2023-11-14 22:13:20    bid     3 50003.0   1000</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; 4:   BTC-PERPETUAL 2023-11-14 22:13:20    ask     1 50006.0    800</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; 5:   BTC-PERPETUAL 2023-11-14 22:13:20    ask     2 50006.5   1200</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="the-dvol-volatility-index">The DVOL volatility index<a class="anchor" aria-label="anchor" href="#the-dvol-volatility-index"></a>
+</h2>
+<p><code>get_volatility_index_data()</code> returns the DVOL candles over a window — the regime dial. Timestamps are <code>lubridate</code> POSIXct; a single call returns up to ~1000 candles, and a longer range pages by moving <code>end_timestamp</code> back:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dvol</span> <span class="op">&lt;-</span> <span class="va">md</span><span class="op">$</span><span class="fu">get_volatility_index_data</span><span class="op">(</span></span>
+<span>    <span class="st">"BTC"</span>,</span>
+<span>    start_timestamp <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd_hms.html" class="external-link">ymd_hms</a></span><span class="op">(</span><span class="st">"2023-11-01 00:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>    end_timestamp <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd_hms.html" class="external-link">ymd_hms</a></span><span class="op">(</span><span class="st">"2023-11-08 00:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>    resolution <span class="op">=</span> <span class="st">"3600"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">dvol</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co">#&gt;    currency            datetime resolution  open  high   low close</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt;      &lt;char&gt;              &lt;POSc&gt;     &lt;char&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; 1:      BTC 2023-11-14 22:13:20       3600  38.0  38.5  37.9  38.2</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; 2:      BTC 2023-11-14 23:13:20       3600  38.2  38.6  38.1  38.4</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; 3:      BTC 2023-11-15 00:13:20       3600  38.4  38.7  38.3  38.5</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="perpetual-funding">Perpetual funding<a class="anchor" aria-label="anchor" href="#perpetual-funding"></a>
+</h2>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">funding</span> <span class="op">&lt;-</span> <span class="va">md</span><span class="op">$</span><span class="fu">get_funding_rate_history</span><span class="op">(</span></span>
+<span>    <span class="st">"BTC-PERPETUAL"</span>,</span>
+<span>    start_timestamp <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd_hms.html" class="external-link">ymd_hms</a></span><span class="op">(</span><span class="st">"2023-11-01 00:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>    end_timestamp <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd_hms.html" class="external-link">ymd_hms</a></span><span class="op">(</span><span class="st">"2023-11-08 00:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">funding</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co">#&gt;    instrument_name            datetime index_price prev_index_price interest_8h</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt;             &lt;char&gt;              &lt;POSc&gt;       &lt;num&gt;            &lt;num&gt;       &lt;num&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; 1:   BTC-PERPETUAL 2023-11-14 22:13:20       50000            49900       4e-05</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; 2:   BTC-PERPETUAL 2023-11-14 23:13:20       50100            50000       3e-05</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co">#&gt; 3:   BTC-PERPETUAL 2023-11-15 00:13:20       50050            50100       5e-05</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt;    interest_1h</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt;          &lt;num&gt;</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt; 1:     1.5e-06</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#&gt; 2:     1.2e-06</span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="co">#&gt; 3:     1.8e-06</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="the-option-chain">The option chain<a class="anchor" aria-label="anchor" href="#the-option-chain"></a>
+</h2>
+<p><code>get_book_summary_by_currency(currency, kind = "option")</code> is the whole chain in one call — mark IV, open interest, volume, and the (null-able) bid/ask/mid for every live option. <code>get_option_chain()</code> is the convenience wrapper:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">chain</span> <span class="op">&lt;-</span> <span class="va">md</span><span class="op">$</span><span class="fu">get_option_chain</span><span class="op">(</span><span class="st">"BTC"</span><span class="op">)</span></span>
+<span><span class="va">chain</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">instrument_name</span>, <span class="va">mark_iv</span>, <span class="va">bid_price</span>, <span class="va">ask_price</span>, <span class="va">open_interest</span>, <span class="va">volume</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co">#&gt;        instrument_name mark_iv bid_price ask_price open_interest volume</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt;                 &lt;char&gt;   &lt;num&gt;     &lt;num&gt;     &lt;num&gt;         &lt;num&gt;  &lt;num&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; 1: BTC-31JUL26-40000-P    55.7    0.0024    0.0028         395.0    3.6</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; 2: BTC-31JUL26-60000-C    78.5        NA    0.0002         168.6    0.0</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="asynchronous-usage">Asynchronous usage<a class="anchor" aria-label="anchor" href="#asynchronous-usage"></a>
+</h2>
+<p>Set <code>async = TRUE</code> and consume the promise with <code><a href="https://coro.r-lib.org/reference/async.html" class="external-link">coro::async</a></code> / <code>await</code>, driving the event loop with <code>later</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span><span class="va">coro</span>, <span class="va">later</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">md_async</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/DeribitMarketData.html">DeribitMarketData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>async <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">main</span> <span class="op">&lt;-</span> <span class="fu">coro</span><span class="fu">::</span><span class="fu"><a href="https://coro.r-lib.org/reference/async.html" class="external-link">async</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">dvol</span> <span class="op">&lt;-</span> <span class="fu">await</span><span class="op">(</span><span class="va">md_async</span><span class="op">$</span><span class="fu">get_volatility_index_data</span><span class="op">(</span></span>
+<span>        <span class="st">"BTC"</span>,</span>
+<span>        start_timestamp <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/now.html" class="external-link">now</a></span><span class="op">(</span><span class="st">"UTC"</span><span class="op">)</span> <span class="op">-</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/period.html" class="external-link">days</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span>,</span>
+<span>        end_timestamp <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/now.html" class="external-link">now</a></span><span class="op">(</span><span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>        resolution <span class="op">=</span> <span class="st">"3600"</span></span>
+<span>    <span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">chain</span> <span class="op">&lt;-</span> <span class="fu">await</span><span class="op">(</span><span class="va">md_async</span><span class="op">$</span><span class="fu">get_option_chain</span><span class="op">(</span><span class="st">"BTC"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dvol <span class="op">=</span> <span class="va">dvol</span>, chain <span class="op">=</span> <span class="va">chain</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">main</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw">while</span> <span class="op">(</span><span class="op">!</span><span class="fu">later</span><span class="fu">::</span><span class="fu"><a href="https://later.r-lib.org/reference/loop_empty.html" class="external-link">loop_empty</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="fu">later</span><span class="fu">::</span><span class="fu"><a href="https://later.r-lib.org/reference/run_now.html" class="external-link">run_now</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="error-handling">Error handling<a class="anchor" aria-label="anchor" href="#error-handling"></a>
+</h2>
+<p>A bad argument is caught before any request as a <code>deribit_validation_error</code>; a Deribit JSON-RPC error surfaces as a typed <code>deribit_api_error</code> carrying the HTTP status, the JSON-RPC code, and the offending parameter:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
+<span>    <span class="va">md</span><span class="op">$</span><span class="fu">get_volatility_index_data</span><span class="op">(</span><span class="st">"BTC"</span>, <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/now.html" class="external-link">now</a></span><span class="op">(</span><span class="st">"UTC"</span><span class="op">)</span>, <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/now.html" class="external-link">now</a></span><span class="op">(</span><span class="st">"UTC"</span><span class="op">)</span>, resolution <span class="op">=</span> <span class="st">"99"</span><span class="op">)</span>,</span>
+<span>    deribit_validation_error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"caught:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">conditionMessage</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">result</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co">#&gt; [1] "caught: Invalid resolution '99'. Valid values: 1, 60, 3600, 43200, 1D."</span></span></code></pre></div>
+</div>
+</div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">

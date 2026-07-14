@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">deribit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,10 +16,6 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/demo.html">Demonstrating deribit</a></li>
-  </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/dereckscompany/deribit" aria-label="GitHub repository"><span class="fa fa-github"></span></a></li>
@@ -35,9 +31,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="r-functions">R Functions<a class="anchor" aria-label="anchor" href="#r-functions"></a></h2>
+      <h2 id="market-data-client">Market-data client<a class="anchor" aria-label="anchor" href="#market-data-client"></a></h2>
 
-      <div class="section-desc"><p>Pure R functions</p></div>
+      <div class="section-desc"><p>The public JSON-RPC market-data client.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -46,12 +42,73 @@
 
       <dl><dt>
 
-          <code><a href="add.html">add()</a></code>
+          <code><a href="DeribitMarketData.html">DeribitMarketData</a></code>
 
         </dt>
-        <dd>Add two numbers</dd>
+        <dd>DeribitMarketData: Deribit Public Market-Data Client</dd>
+      </dl></div><div class="section level2">
+      <h2 id="configuration-and-vocabulary">Configuration and vocabulary<a class="anchor" aria-label="anchor" href="#configuration-and-vocabulary"></a></h2>
+
+      <div class="section-desc"><p>The base-URL getter and the endpoint vocabularies.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="deribit_base_url.html">deribit_base_url()</a></code>
+
+        </dt>
+        <dd>Deribit API base URL (the <code>/api/v2</code> root)</dd>
+
+        <dt>
+
+          <code><a href="INSTRUMENT_KIND.html">INSTRUMENT_KIND</a></code>
+
+        </dt>
+        <dd>Deribit instrument kinds</dd>
+
+        <dt>
+
+          <code><a href="DVOL_RESOLUTIONS.html">DVOL_RESOLUTIONS</a></code>
+
+        </dt>
+        <dd>DVOL volatility-index candle resolutions</dd>
+
+        <dt>
+
+          <code><a href="TRADE_SORTING.html">TRADE_SORTING</a></code>
+
+        </dt>
+        <dd>Trade sort order</dd>
+      </dl></div><div class="section level2">
+      <h2 id="conditions-and-shapes">Conditions and shapes<a class="anchor" aria-label="anchor" href="#conditions-and-shapes"></a></h2>
+
+      <div class="section-desc"><p>The typed condition family and the documented return shapes.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="deribit_conditions.html">deribit_conditions</a></code>
+
+        </dt>
+        <dd>Typed deribit conditions</dd>
+
+        <dt>
+
+          <code><a href="deribit_shapes.html">deribit_shapes</a></code>
+
+        </dt>
+        <dd>deribit return shapes</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
