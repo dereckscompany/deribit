@@ -1,0 +1,35 @@
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "timestamp": 1700000000000,
+    "state": "open",
+    "stats": {
+      "high": null,
+      "low": null,
+      "price_change": null,
+      "volume": 0.0,
+      "volume_usd": 0.0
+    },
+    "instrument_name": "BTC-31JUL26-50000-C",
+    "index_price": 50000.0,
+    "mark_price": 0.12,
+    "mark_iv": 60.5,
+    "greeks": {
+      "delta": 0.55,
+      "gamma": 0.00002,
+      "vega": 12.34,
+      "theta": -5.67,
+      "rho": 8.9
+    },
+    "open_interest": 250.0,
+    "best_bid_price": 0.11,
+    "best_ask_price": 0.13,
+    "underlying_price": 50000.0,
+    "interest_rate": 0.0,
+    "estimated_delivery_price": 50000.0
+  },
+  "usIn": 1700000000000000,
+  "usOut": 1700000000000100,
+  "usDiff": 100,
+  "testnet": false
+}

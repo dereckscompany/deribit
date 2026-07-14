@@ -1,0 +1,31 @@
+{
+  "jsonrpc": "2.0",
+  "result": [
+    {
+      "coin_type": "BTC",
+      "currency": "BTC",
+      "currency_long": "Bitcoin",
+      "decimals": 8,
+      "min_confirmations": 1,
+      "min_withdrawal_fee": 0.00001,
+      "withdrawal_fee": 0.00001,
+      "network_fee": 0.000003,
+      "in_cross_collateral_pool": true
+    },
+    {
+      "coin_type": "ETHER",
+      "currency": "ETH",
+      "currency_long": "Ethereum",
+      "decimals": 18,
+      "min_confirmations": 12,
+      "min_withdrawal_fee": 0.0001,
+      "withdrawal_fee": 0.0001,
+      "network_fee": 0.00003,
+      "in_cross_collateral_pool": true
+    }
+  ],
+  "usIn": 1700000000000000,
+  "usOut": 1700000000000100,
+  "usDiff": 100,
+  "testnet": false
+}
