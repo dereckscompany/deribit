@@ -26,6 +26,10 @@ local_mock_api(.mock_routes)
 
 # deribit
 
+**In plain terms:** Deribit is the world's biggest exchange for crypto options — contracts that are essentially bets on how much the price of Bitcoin or Ether will swing. Because so much of that activity happens in one place, it is the best window into what traders collectively expect the market to do next, including a single headline gauge, the DVOL index, that summarises how nervous or calm the options market is. This package pulls Deribit's public market data — the list of tradable contracts, live prices and order books, that volatility index, perpetual funding costs, and recent trades — and returns it as clean tables you can work with in R. It reads public data only: there is no trading and no login or API key required. It reports the exchange's numbers faithfully and leaves the interpretation to you.
+
+## Technical overview
+
 R API wrapper to the [Deribit](https://www.deribit.com) crypto options and derivatives exchange, supporting both synchronous and asynchronous (promise based) operations. Provides an R6 market-data client for the public JSON-RPC endpoints — instruments, ticker, order book, index price, DVOL volatility index, funding rates, trades, and option-chain book summaries — built on the shared [connectcore](https://github.com/dereckscompany/connectcore) transport base.
 
 ## What this is
