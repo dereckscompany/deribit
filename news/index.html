@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">deribit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,9 +28,19 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/dereckscompany/deribit/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/dereckscompany/deribit/blob/v0.2.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="deribit-020">deribit 0.2.0<a class="anchor" aria-label="anchor" href="#deribit-020"></a></h2>
+<p>Lossless raw accessors alongside the typed surface, for byte-faithful bronze archival.</p>
+<p>In plain English: the typed <code>data.table</code> methods are the right default for analysis, but a raw-data archive wants the exchange’s own records untouched — every field, in the venue’s order, with a genuine “no value” (a JSON <code>null</code>) kept distinct from “field not sent”. This release adds raw siblings for the two surfaces the scraper’s <code>deribit-options</code> collector archives, so the archive stores exactly what Deribit sent and the tidy tables remain the analysis convenience.</p>
+<ul><li>
+<code>get_book_summary_by_currency_raw()</code> and its option-chain convenience <code>get_option_chain_raw()</code>: the parsed JSON array of book-summary records exactly as Deribit returns it — one named list per instrument, in venue order, every field preserved (including the raw <code>creation_timestamp</code> the typed table derives into <code>datetime</code> and drops), a JSON <code>null</code> kept as R <code>NULL</code> (distinct from an absent field), and no invented columns (an option never carries <code>volume_notional</code>/<code>current_funding</code>/<code>funding_8h</code>, so the raw record simply omits them where the typed table fills all-NA columns).</li>
+<li>
+<code>get_volatility_index_data_raw()</code>: the raw <code>{ data, continuation }</code> object exactly as Deribit returns it, exposing both the untouched <code>[timestamp_ms, open, high, low, close]</code> <code>data</code> rows and the <code>continuation</code> paging cursor that the typed <code>get_volatility_index_data()</code> drops — so a backfill can page a range longer than one response by feeding <code>continuation</code> back as the next <code>end_timestamp</code>.</li>
+<li>Each raw method carries a roxyassert <code>(list | promise&lt;list&gt;)</code> contract and threads sync/async from the constructor exactly like its typed sibling; both are covered end-to-end against the synthetic mock router (a new paged DVOL fixture carries a non-null continuation cursor). The typed methods are unchanged.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="deribit-010">deribit 0.1.0<a class="anchor" aria-label="anchor" href="#deribit-010"></a></h2>
 <p>Initial release: the Deribit crypto-derivatives exchange in the fleet’s connector idiom — public market data only.</p>
@@ -42,7 +52,8 @@
 <li>Grounded against the live public API and served offline by fully synthetic mock fixtures (a null option bid/mid and null option stats to exercise the <code>| NA</code> columns, a liquidation trade, and both kinds of ticker). Three design facts corrected against reality: the ticker endpoint is <code>public/ticker</code> (not <code>public/get_ticker</code>); a business error arrives as an HTTP 400 carrying a JSON-RPC <code>error</code> object; <code>get_funding_rate_value</code> returns a bare scalar, wrapped here into a one-row window table.</li>
 </ul><p>Not built in this release (deliberately out of scope): the private authenticated surface (orders, positions, account) and the WebSocket subscription streams. The scraper’s <code>deribit-options</code> collector is the intended future dogfood consumer of this package’s <code>get_volatility_index_data</code> and <code>get_book_summary_by_currency</code>.</p>
 </div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

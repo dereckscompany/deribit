@@ -15,7 +15,7 @@ per deribit_shapes."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">deribit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@ per deribit_shapes."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>DeribitMarketData: Deribit Public Market-Data Client</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/deribit/blob/master/R/DeribitMarketData.R" class="external-link"><code>R/DeribitMarketData.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/deribit/blob/v0.2.0/R/DeribitMarketData.R" class="external-link"><code>R/DeribitMarketData.R</code></a></small>
       <div class="d-none name"><code>DeribitMarketData.Rd</code></div>
     </div>
 
@@ -95,12 +95,15 @@ failure (public reads are GET, so retry is always safe here).</p>
 <li><p><a href="#method-DeribitMarketData-get_order_book"><code>DeribitMarketData$get_order_book()</code></a></p></li>
 <li><p><a href="#method-DeribitMarketData-get_index_price"><code>DeribitMarketData$get_index_price()</code></a></p></li>
 <li><p><a href="#method-DeribitMarketData-get_volatility_index_data"><code>DeribitMarketData$get_volatility_index_data()</code></a></p></li>
+<li><p><a href="#method-DeribitMarketData-get_volatility_index_data_raw"><code>DeribitMarketData$get_volatility_index_data_raw()</code></a></p></li>
 <li><p><a href="#method-DeribitMarketData-get_funding_rate_history"><code>DeribitMarketData$get_funding_rate_history()</code></a></p></li>
 <li><p><a href="#method-DeribitMarketData-get_funding_rate_value"><code>DeribitMarketData$get_funding_rate_value()</code></a></p></li>
 <li><p><a href="#method-DeribitMarketData-get_last_trades_by_instrument"><code>DeribitMarketData$get_last_trades_by_instrument()</code></a></p></li>
 <li><p><a href="#method-DeribitMarketData-get_book_summary_by_currency"><code>DeribitMarketData$get_book_summary_by_currency()</code></a></p></li>
+<li><p><a href="#method-DeribitMarketData-get_book_summary_by_currency_raw"><code>DeribitMarketData$get_book_summary_by_currency_raw()</code></a></p></li>
 <li><p><a href="#method-DeribitMarketData-get_book_summary_by_instrument"><code>DeribitMarketData$get_book_summary_by_instrument()</code></a></p></li>
 <li><p><a href="#method-DeribitMarketData-get_option_chain"><code>DeribitMarketData$get_option_chain()</code></a></p></li>
+<li><p><a href="#method-DeribitMarketData-get_option_chain_raw"><code>DeribitMarketData$get_option_chain_raw()</code></a></p></li>
 <li><p><a href="#method-DeribitMarketData-clone"><code>DeribitMarketData$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-DeribitMarketData-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -303,23 +306,30 @@ precede <code>start_timestamp</code>.</p></dd>
 thereof.</p>
 </div>
 
-</div><p></p><hr><a id="method-DeribitMarketData-get_funding_rate_history"></a><div class="section">
-<h3 id="method-get-funding-rate-history-">Method <code>get_funding_rate_history()</code><a class="anchor" aria-label="anchor" href="#method-get-funding-rate-history-"></a></h3>
-<p>Retrieve the funding-rate history for a perpetual over a
-window.</p><div class="section">
+</div><p></p><hr><a id="method-DeribitMarketData-get_volatility_index_data_raw"></a><div class="section">
+<h3 id="method-get-volatility-index-data-raw-">Method <code>get_volatility_index_data_raw()</code><a class="anchor" aria-label="anchor" href="#method-get-volatility-index-data-raw-"></a></h3>
+<p>Retrieve a DVOL window as the venue's own <strong>raw object</strong> — the
+parsed JSON <code>{ data, continuation }</code> exactly as Deribit returns it. This
+is the lossless counterpart to <code>get_volatility_index_data()</code>: that method
+returns tidy candle rows and drops the paging cursor, whereas this
+preserves both the raw <code>[timestamp_ms, open, high, low, close]</code> <code>data</code>
+rows and the <code>continuation</code> cursor Deribit returns when more history
+remains (its next <code>end_timestamp</code> in ms, or JSON <code>null</code> when the range is
+exhausted). A backfill pages a range longer than one response by feeding
+<code>continuation</code> back as the next <code>end_timestamp</code>.</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">get_funding_rate_history</span><span class="op">(</span></span>
-<span>  <span class="va">instrument_name</span>,</span>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">get_volatility_index_data_raw</span><span class="op">(</span></span>
+<span>  <span class="va">currency</span>,</span>
 <span>  <span class="va">start_timestamp</span>,</span>
-<span>  <span class="va">end_timestamp</span></span>
+<span>  <span class="va">end_timestamp</span>,</span>
+<span>  <span class="va">resolution</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>instrument_name</code></dt>
-<dd><p>(scalar&lt;character&gt;) the perpetual, e.g.
-<code>"BTC-PERPETUAL"</code>.</p></dd>
+<p></p><div class="arguments"><dl><dt><code>currency</code></dt>
+<dd><p>(scalar&lt;character&gt;) the currency, e.g. <code>"BTC"</code>.</p></dd>
 
 
 <dt><code>start_timestamp</code></dt>
@@ -331,20 +341,25 @@ window.</p><div class="section">
 precede <code>start_timestamp</code>.</p></dd>
 
 
+<dt><code>resolution</code></dt>
+<dd><p>(scalar&lt;character&gt;) the candle resolution, one of
+<code>DVOL_RESOLUTIONS</code> ("1", "60", "3600", "43200" seconds, or "1D" daily).</p></dd>
+
+
 </dl><p></p></div>
 </div>
 <div class="section">
 <h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
-<p>(FundingRateHistory | promise&lt;FundingRateHistory&gt;) one row per
-sample, or a promise thereof.</p>
+<p>(list | promise&lt;list&gt;) the raw <code>{ data, continuation }</code> object, or
+a promise thereof.</p>
 </div>
 
-</div><p></p><hr><a id="method-DeribitMarketData-get_funding_rate_value"></a><div class="section">
-<h3 id="method-get-funding-rate-value-">Method <code>get_funding_rate_value()</code><a class="anchor" aria-label="anchor" href="#method-get-funding-rate-value-"></a></h3>
-<p>Retrieve the aggregate funding rate for a perpetual over a
-window (the current funding when the window is the last 8 hours).</p><div class="section">
+</div><p></p><hr><a id="method-DeribitMarketData-get_funding_rate_history"></a><div class="section">
+<h3 id="method-get-funding-rate-history-">Method <code>get_funding_rate_history()</code><a class="anchor" aria-label="anchor" href="#method-get-funding-rate-history-"></a></h3>
+<p>Retrieve the funding-rate history for a perpetual over a
+window.</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">get_funding_rate_value</span><span class="op">(</span></span>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">get_funding_rate_history</span><span class="op">(</span></span>
 <span>  <span class="va">instrument_name</span>,</span>
 <span>  <span class="va">start_timestamp</span>,</span>
 <span>  <span class="va">end_timestamp</span></span>
@@ -371,6 +386,42 @@ precede <code>start_timestamp</code>.</p></dd>
 </div>
 <div class="section">
 <h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
+<p>(FundingRateHistory | promise&lt;FundingRateHistory&gt;) one row per
+sample, or a promise thereof.</p>
+</div>
+
+</div><p></p><hr><a id="method-DeribitMarketData-get_funding_rate_value"></a><div class="section">
+<h3 id="method-get-funding-rate-value-">Method <code>get_funding_rate_value()</code><a class="anchor" aria-label="anchor" href="#method-get-funding-rate-value-"></a></h3>
+<p>Retrieve the aggregate funding rate for a perpetual over a
+window (the current funding when the window is the last 8 hours).</p><div class="section">
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">get_funding_rate_value</span><span class="op">(</span></span>
+<span>  <span class="va">instrument_name</span>,</span>
+<span>  <span class="va">start_timestamp</span>,</span>
+<span>  <span class="va">end_timestamp</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>instrument_name</code></dt>
+<dd><p>(scalar&lt;character&gt;) the perpetual, e.g.
+<code>"BTC-PERPETUAL"</code>.</p></dd>
+
+
+<dt><code>start_timestamp</code></dt>
+<dd><p>(class&lt;POSIXct&gt;) the window start (inclusive).</p></dd>
+
+
+<dt><code>end_timestamp</code></dt>
+<dd><p>(class&lt;POSIXct&gt;) the window end (inclusive). Must not
+precede <code>start_timestamp</code>.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
 <p>(FundingRateValue | promise&lt;FundingRateValue&gt;) a one-row aggregate
 funding table, or a promise thereof.</p>
 </div>
@@ -378,7 +429,7 @@ funding table, or a promise thereof.</p>
 </div><p></p><hr><a id="method-DeribitMarketData-get_last_trades_by_instrument"></a><div class="section">
 <h3 id="method-get-last-trades-by-instrument-">Method <code>get_last_trades_by_instrument()</code><a class="anchor" aria-label="anchor" href="#method-get-last-trades-by-instrument-"></a></h3>
 <p>Retrieve the most recent public trades for one instrument.</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">get_last_trades_by_instrument</span><span class="op">(</span></span>
 <span>  <span class="va">instrument_name</span>,</span>
 <span>  count <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -389,7 +440,7 @@ funding table, or a promise thereof.</p>
 </div>
 
 <div class="section">
-<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>instrument_name</code></dt>
 <dd><p>(scalar&lt;character&gt;) the instrument, e.g.
 <code>"BTC-PERPETUAL"</code>.</p></dd>
@@ -419,7 +470,7 @@ Default <code>NULL</code>.</p></dd>
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
+<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
 <p>(Trade | promise&lt;Trade&gt;) one row per trade, or a promise thereof.</p>
 </div>
 
@@ -428,12 +479,12 @@ Default <code>NULL</code>.</p></dd>
 <p>Retrieve the book summary for every live instrument of a
 currency (with <code>kind = "option"</code> this is the option-chain snapshot the
 fleet consumes).</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">get_book_summary_by_currency</span><span class="op">(</span><span class="va">currency</span>, kind <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
+<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>currency</code></dt>
 <dd><p>(scalar&lt;character&gt;) the currency, e.g. <code>"BTC"</code>.</p></dd>
 
@@ -447,20 +498,55 @@ fleet consumes).</p><div class="section">
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
+<h4 id="returns-11">Returns<a class="anchor" aria-label="anchor" href="#returns-11"></a></h4>
 <p>(BookSummary | promise&lt;BookSummary&gt;) one row per instrument, or a
 promise thereof.</p>
+</div>
+
+</div><p></p><hr><a id="method-DeribitMarketData-get_book_summary_by_currency_raw"></a><div class="section">
+<h3 id="method-get-book-summary-by-currency-raw-">Method <code>get_book_summary_by_currency_raw()</code><a class="anchor" aria-label="anchor" href="#method-get-book-summary-by-currency-raw-"></a></h3>
+<p>Retrieve the book summary for every live instrument of a
+currency as the venue's own <strong>raw records</strong> — the parsed JSON array
+exactly as Deribit returns it, in venue order, with every field preserved
+(including <code>creation_timestamp</code>, which the typed table derives away) and a
+JSON <code>null</code> kept distinct from an absent field. This is the lossless
+counterpart to <code>get_book_summary_by_currency()</code>: where that method returns
+a tidy typed <code>data.table</code>, this returns the untouched records a bronze
+passthrough archives verbatim. Each element is one instrument's book
+summary as a named list.</p><div class="section">
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">get_book_summary_by_currency_raw</span><span class="op">(</span><span class="va">currency</span>, kind <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>currency</code></dt>
+<dd><p>(scalar&lt;character&gt;) the currency, e.g. <code>"BTC"</code>.</p></dd>
+
+
+<dt><code>kind</code></dt>
+<dd><p>(scalar&lt;character&gt; | NULL) the instrument-kind filter, one of
+<code>names(INSTRUMENT_KIND)</code> ("future", "option", "spot", "future_combo",
+"option_combo"); <code>NULL</code> returns every kind. Default <code>NULL</code>.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-12">Returns<a class="anchor" aria-label="anchor" href="#returns-12"></a></h4>
+<p>(list | promise&lt;list&gt;) the raw book-summary records (one named list
+per instrument), or a promise thereof.</p>
 </div>
 
 </div><p></p><hr><a id="method-DeribitMarketData-get_book_summary_by_instrument"></a><div class="section">
 <h3 id="method-get-book-summary-by-instrument-">Method <code>get_book_summary_by_instrument()</code><a class="anchor" aria-label="anchor" href="#method-get-book-summary-by-instrument-"></a></h3>
 <p>Retrieve the book summary for one instrument.</p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">get_book_summary_by_instrument</span><span class="op">(</span><span class="va">instrument_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
+<h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>instrument_name</code></dt>
 <dd><p>(scalar&lt;character&gt;) the instrument, e.g.
 <code>"BTC-PERPETUAL"</code>.</p></dd>
@@ -469,7 +555,7 @@ promise thereof.</p>
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-11">Returns<a class="anchor" aria-label="anchor" href="#returns-11"></a></h4>
+<h4 id="returns-13">Returns<a class="anchor" aria-label="anchor" href="#returns-13"></a></h4>
 <p>(BookSummary | promise&lt;BookSummary&gt;) a one-row book-summary table,
 or a promise thereof.</p>
 </div>
@@ -479,12 +565,12 @@ or a promise thereof.</p>
 <p>Retrieve the option-chain snapshot for a currency. A
 convenience wrapper over <code>get_book_summary_by_currency(currency, kind = "option")</code> — the one Deribit call the scraper's option-chain
 collector consumes.</p><div class="section">
-<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">get_option_chain</span><span class="op">(</span><span class="va">currency</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
+<h4 id="arguments-13">Arguments<a class="anchor" aria-label="anchor" href="#arguments-13"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>currency</code></dt>
 <dd><p>(scalar&lt;character&gt;) the currency, e.g. <code>"BTC"</code>.</p></dd>
 
@@ -492,20 +578,46 @@ collector consumes.</p><div class="section">
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-12">Returns<a class="anchor" aria-label="anchor" href="#returns-12"></a></h4>
+<h4 id="returns-14">Returns<a class="anchor" aria-label="anchor" href="#returns-14"></a></h4>
 <p>(BookSummary | promise&lt;BookSummary&gt;) one row per live option, or a
 promise thereof.</p>
+</div>
+
+</div><p></p><hr><a id="method-DeribitMarketData-get_option_chain_raw"></a><div class="section">
+<h3 id="method-get-option-chain-raw-">Method <code>get_option_chain_raw()</code><a class="anchor" aria-label="anchor" href="#method-get-option-chain-raw-"></a></h3>
+<p>Retrieve the option-chain snapshot for a currency as the
+venue's own <strong>raw records</strong> (the lossless counterpart to
+<code>get_option_chain()</code>): a convenience wrapper over
+<code>get_book_summary_by_currency_raw(currency, kind = "option")</code> — the one
+Deribit call the scraper's option-chain collector archives verbatim as
+bronze.</p><div class="section">
+<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">get_option_chain_raw</span><span class="op">(</span><span class="va">currency</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-14">Arguments<a class="anchor" aria-label="anchor" href="#arguments-14"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>currency</code></dt>
+<dd><p>(scalar&lt;character&gt;) the currency, e.g. <code>"BTC"</code>.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-15">Returns<a class="anchor" aria-label="anchor" href="#returns-15"></a></h4>
+<p>(list | promise&lt;list&gt;) the raw option book-summary records (one
+named list per live option), or a promise thereof.</p>
 </div>
 
 </div><p></p><hr><a id="method-DeribitMarketData-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
+<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">DeribitMarketData</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
+<h4 id="arguments-15">Arguments<a class="anchor" aria-label="anchor" href="#arguments-15"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

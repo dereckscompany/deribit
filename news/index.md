@@ -1,5 +1,40 @@
 # Changelog
 
+## deribit 0.2.0
+
+Lossless raw accessors alongside the typed surface, for byte-faithful
+bronze archival.
+
+In plain English: the typed `data.table` methods are the right default
+for analysis, but a raw-data archive wants the exchange’s own records
+untouched — every field, in the venue’s order, with a genuine “no value”
+(a JSON `null`) kept distinct from “field not sent”. This release adds
+raw siblings for the two surfaces the scraper’s `deribit-options`
+collector archives, so the archive stores exactly what Deribit sent and
+the tidy tables remain the analysis convenience.
+
+- `get_book_summary_by_currency_raw()` and its option-chain convenience
+  `get_option_chain_raw()`: the parsed JSON array of book-summary
+  records exactly as Deribit returns it — one named list per instrument,
+  in venue order, every field preserved (including the raw
+  `creation_timestamp` the typed table derives into `datetime` and
+  drops), a JSON `null` kept as R `NULL` (distinct from an absent
+  field), and no invented columns (an option never carries
+  `volume_notional`/`current_funding`/`funding_8h`, so the raw record
+  simply omits them where the typed table fills all-NA columns).
+- `get_volatility_index_data_raw()`: the raw `{ data, continuation }`
+  object exactly as Deribit returns it, exposing both the untouched
+  `[timestamp_ms, open, high, low, close]` `data` rows and the
+  `continuation` paging cursor that the typed
+  `get_volatility_index_data()` drops — so a backfill can page a range
+  longer than one response by feeding `continuation` back as the next
+  `end_timestamp`.
+- Each raw method carries a roxyassert `(list | promise<list>)` contract
+  and threads sync/async from the constructor exactly like its typed
+  sibling; both are covered end-to-end against the synthetic mock router
+  (a new paged DVOL fixture carries a non-null continuation cursor). The
+  typed methods are unchanged.
+
 ## deribit 0.1.0
 
 Initial release: the Deribit crypto-derivatives exchange in the fleet’s

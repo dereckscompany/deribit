@@ -68,6 +68,8 @@ safe here).
 
 - [`DeribitMarketData$get_volatility_index_data()`](#method-DeribitMarketData-get_volatility_index_data)
 
+- [`DeribitMarketData$get_volatility_index_data_raw()`](#method-DeribitMarketData-get_volatility_index_data_raw)
+
 - [`DeribitMarketData$get_funding_rate_history()`](#method-DeribitMarketData-get_funding_rate_history)
 
 - [`DeribitMarketData$get_funding_rate_value()`](#method-DeribitMarketData-get_funding_rate_value)
@@ -76,9 +78,13 @@ safe here).
 
 - [`DeribitMarketData$get_book_summary_by_currency()`](#method-DeribitMarketData-get_book_summary_by_currency)
 
+- [`DeribitMarketData$get_book_summary_by_currency_raw()`](#method-DeribitMarketData-get_book_summary_by_currency_raw)
+
 - [`DeribitMarketData$get_book_summary_by_instrument()`](#method-DeribitMarketData-get_book_summary_by_instrument)
 
 - [`DeribitMarketData$get_option_chain()`](#method-DeribitMarketData-get_option_chain)
+
+- [`DeribitMarketData$get_option_chain_raw()`](#method-DeribitMarketData-get_option_chain_raw)
 
 - [`DeribitMarketData$clone()`](#method-DeribitMarketData-clone)
 
@@ -285,6 +291,54 @@ thereof.
 
 ------------------------------------------------------------------------
 
+### Method `get_volatility_index_data_raw()`
+
+Retrieve a DVOL window as the venue's own **raw object** — the parsed
+JSON `{ data, continuation }` exactly as Deribit returns it. This is the
+lossless counterpart to `get_volatility_index_data()`: that method
+returns tidy candle rows and drops the paging cursor, whereas this
+preserves both the raw `[timestamp_ms, open, high, low, close]` `data`
+rows and the `continuation` cursor Deribit returns when more history
+remains (its next `end_timestamp` in ms, or JSON `null` when the range
+is exhausted). A backfill pages a range longer than one response by
+feeding `continuation` back as the next `end_timestamp`.
+
+#### Usage
+
+    DeribitMarketData$get_volatility_index_data_raw(
+      currency,
+      start_timestamp,
+      end_timestamp,
+      resolution
+    )
+
+#### Arguments
+
+- `currency`:
+
+  (scalar\<character\>) the currency, e.g. `"BTC"`.
+
+- `start_timestamp`:
+
+  (class\<POSIXct\>) the window start (inclusive).
+
+- `end_timestamp`:
+
+  (class\<POSIXct\>) the window end (inclusive). Must not precede
+  `start_timestamp`.
+
+- `resolution`:
+
+  (scalar\<character\>) the candle resolution, one of `DVOL_RESOLUTIONS`
+  ("1", "60", "3600", "43200" seconds, or "1D" daily).
+
+#### Returns
+
+(list \| promise\<list\>) the raw `{ data, continuation }` object, or a
+promise thereof.
+
+------------------------------------------------------------------------
+
 ### Method `get_funding_rate_history()`
 
 Retrieve the funding-rate history for a perpetual over a window.
@@ -429,6 +483,41 @@ promise thereof.
 
 ------------------------------------------------------------------------
 
+### Method `get_book_summary_by_currency_raw()`
+
+Retrieve the book summary for every live instrument of a currency as the
+venue's own **raw records** — the parsed JSON array exactly as Deribit
+returns it, in venue order, with every field preserved (including
+`creation_timestamp`, which the typed table derives away) and a JSON
+`null` kept distinct from an absent field. This is the lossless
+counterpart to `get_book_summary_by_currency()`: where that method
+returns a tidy typed `data.table`, this returns the untouched records a
+bronze passthrough archives verbatim. Each element is one instrument's
+book summary as a named list.
+
+#### Usage
+
+    DeribitMarketData$get_book_summary_by_currency_raw(currency, kind = NULL)
+
+#### Arguments
+
+- `currency`:
+
+  (scalar\<character\>) the currency, e.g. `"BTC"`.
+
+- `kind`:
+
+  (scalar\<character\> \| NULL) the instrument-kind filter, one of
+  `names(INSTRUMENT_KIND)` ("future", "option", "spot", "future_combo",
+  "option_combo"); `NULL` returns every kind. Default `NULL`.
+
+#### Returns
+
+(list \| promise\<list\>) the raw book-summary records (one named list
+per instrument), or a promise thereof.
+
+------------------------------------------------------------------------
+
 ### Method `get_book_summary_by_instrument()`
 
 Retrieve the book summary for one instrument.
@@ -470,6 +559,32 @@ Deribit call the scraper's option-chain collector consumes.
 
 (BookSummary \| promise\<BookSummary\>) one row per live option, or a
 promise thereof.
+
+------------------------------------------------------------------------
+
+### Method `get_option_chain_raw()`
+
+Retrieve the option-chain snapshot for a currency as the venue's own
+**raw records** (the lossless counterpart to `get_option_chain()`): a
+convenience wrapper over
+`get_book_summary_by_currency_raw(currency, kind = "option")` — the one
+Deribit call the scraper's option-chain collector archives verbatim as
+bronze.
+
+#### Usage
+
+    DeribitMarketData$get_option_chain_raw(currency)
+
+#### Arguments
+
+- `currency`:
+
+  (scalar\<character\>) the currency, e.g. `"BTC"`.
+
+#### Returns
+
+(list \| promise\<list\>) the raw option book-summary records (one named
+list per live option), or a promise thereof.
 
 ------------------------------------------------------------------------
 
