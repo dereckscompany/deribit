@@ -85,12 +85,15 @@ while (!later::loop_empty()) later::run_now()
 \item \href{#method-DeribitMarketData-get_order_book}{\code{DeribitMarketData$get_order_book()}}
 \item \href{#method-DeribitMarketData-get_index_price}{\code{DeribitMarketData$get_index_price()}}
 \item \href{#method-DeribitMarketData-get_volatility_index_data}{\code{DeribitMarketData$get_volatility_index_data()}}
+\item \href{#method-DeribitMarketData-get_volatility_index_data_raw}{\code{DeribitMarketData$get_volatility_index_data_raw()}}
 \item \href{#method-DeribitMarketData-get_funding_rate_history}{\code{DeribitMarketData$get_funding_rate_history()}}
 \item \href{#method-DeribitMarketData-get_funding_rate_value}{\code{DeribitMarketData$get_funding_rate_value()}}
 \item \href{#method-DeribitMarketData-get_last_trades_by_instrument}{\code{DeribitMarketData$get_last_trades_by_instrument()}}
 \item \href{#method-DeribitMarketData-get_book_summary_by_currency}{\code{DeribitMarketData$get_book_summary_by_currency()}}
+\item \href{#method-DeribitMarketData-get_book_summary_by_currency_raw}{\code{DeribitMarketData$get_book_summary_by_currency_raw()}}
 \item \href{#method-DeribitMarketData-get_book_summary_by_instrument}{\code{DeribitMarketData$get_book_summary_by_instrument()}}
 \item \href{#method-DeribitMarketData-get_option_chain}{\code{DeribitMarketData$get_option_chain()}}
+\item \href{#method-DeribitMarketData-get_option_chain_raw}{\code{DeribitMarketData$get_option_chain_raw()}}
 \item \href{#method-DeribitMarketData-clone}{\code{DeribitMarketData$clone()}}
 }
 }
@@ -279,6 +282,48 @@ thereof.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DeribitMarketData-get_volatility_index_data_raw"></a>}}
+\if{latex}{\out{\hypertarget{method-DeribitMarketData-get_volatility_index_data_raw}{}}}
+\subsection{Method \code{get_volatility_index_data_raw()}}{
+Retrieve a DVOL window as the venue's own \strong{raw object} — the
+parsed JSON \verb{\{ data, continuation \}} exactly as Deribit returns it. This
+is the lossless counterpart to \code{get_volatility_index_data()}: that method
+returns tidy candle rows and drops the paging cursor, whereas this
+preserves both the raw \verb{[timestamp_ms, open, high, low, close]} \code{data}
+rows and the \code{continuation} cursor Deribit returns when more history
+remains (its next \code{end_timestamp} in ms, or JSON \code{null} when the range is
+exhausted). A backfill pages a range longer than one response by feeding
+\code{continuation} back as the next \code{end_timestamp}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{DeribitMarketData$get_volatility_index_data_raw(
+  currency,
+  start_timestamp,
+  end_timestamp,
+  resolution
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{currency}}{(scalar<character>) the currency, e.g. \code{"BTC"}.}
+
+\item{\code{start_timestamp}}{(class<POSIXct>) the window start (inclusive).}
+
+\item{\code{end_timestamp}}{(class<POSIXct>) the window end (inclusive). Must not
+precede \code{start_timestamp}.}
+
+\item{\code{resolution}}{(scalar<character>) the candle resolution, one of
+\code{DVOL_RESOLUTIONS} ("1", "60", "3600", "43200" seconds, or "1D" daily).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(list | promise<list>) the raw \verb{\{ data, continuation \}} object, or
+a promise thereof.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DeribitMarketData-get_funding_rate_history"></a>}}
 \if{latex}{\out{\hypertarget{method-DeribitMarketData-get_funding_rate_history}{}}}
 \subsection{Method \code{get_funding_rate_history()}}{
@@ -410,6 +455,39 @@ promise thereof.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DeribitMarketData-get_book_summary_by_currency_raw"></a>}}
+\if{latex}{\out{\hypertarget{method-DeribitMarketData-get_book_summary_by_currency_raw}{}}}
+\subsection{Method \code{get_book_summary_by_currency_raw()}}{
+Retrieve the book summary for every live instrument of a
+currency as the venue's own \strong{raw records} — the parsed JSON array
+exactly as Deribit returns it, in venue order, with every field preserved
+(including \code{creation_timestamp}, which the typed table derives away) and a
+JSON \code{null} kept distinct from an absent field. This is the lossless
+counterpart to \code{get_book_summary_by_currency()}: where that method returns
+a tidy typed \code{data.table}, this returns the untouched records a bronze
+passthrough archives verbatim. Each element is one instrument's book
+summary as a named list.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{DeribitMarketData$get_book_summary_by_currency_raw(currency, kind = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{currency}}{(scalar<character>) the currency, e.g. \code{"BTC"}.}
+
+\item{\code{kind}}{(scalar<character> | NULL) the instrument-kind filter, one of
+\code{names(INSTRUMENT_KIND)} ("future", "option", "spot", "future_combo",
+"option_combo"); \code{NULL} returns every kind. Default \code{NULL}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(list | promise<list>) the raw book-summary records (one named list
+per instrument), or a promise thereof.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DeribitMarketData-get_book_summary_by_instrument"></a>}}
 \if{latex}{\out{\hypertarget{method-DeribitMarketData-get_book_summary_by_instrument}{}}}
 \subsection{Method \code{get_book_summary_by_instrument()}}{
@@ -452,6 +530,32 @@ collector consumes.
 \subsection{Returns}{
 (BookSummary | promise<BookSummary>) one row per live option, or a
 promise thereof.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DeribitMarketData-get_option_chain_raw"></a>}}
+\if{latex}{\out{\hypertarget{method-DeribitMarketData-get_option_chain_raw}{}}}
+\subsection{Method \code{get_option_chain_raw()}}{
+Retrieve the option-chain snapshot for a currency as the
+venue's own \strong{raw records} (the lossless counterpart to
+\code{get_option_chain()}): a convenience wrapper over
+\code{get_book_summary_by_currency_raw(currency, kind = "option")} — the one
+Deribit call the scraper's option-chain collector archives verbatim as
+bronze.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{DeribitMarketData$get_option_chain_raw(currency)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{currency}}{(scalar<character>) the currency, e.g. \code{"BTC"}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(list | promise<list>) the raw option book-summary records (one
+named list per live option), or a promise thereof.
 }
 }
 \if{html}{\out{<hr>}}

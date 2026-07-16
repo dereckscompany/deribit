@@ -43,10 +43,14 @@ authenticated surface, and the public endpoints need no API key.
 
 ## Design philosophy
 
-- **`data.table` everywhere, no list columns.** Every method returns one
-  flat `data.table`; measurement columns (and any field legitimately
-  absent for a given instrument kind — an option’s greeks, a perpetual’s
-  funding, a null bid) are typed nullable, structural columns strict.
+- **`data.table` by default, with a lossless escape hatch.** Every typed
+  method returns one flat `data.table` (no list columns); measurement
+  columns (and any field legitimately absent for a given instrument kind
+  — an option’s greeks, a perpetual’s funding, a null bid) are typed
+  nullable, structural columns strict. Where a byte-faithful archive
+  needs the venue’s own records instead of a tidy table, the `*_raw()`
+  siblings return Deribit’s parsed JSON untouched (see the raw, lossless
+  access section below).
 - **Sync and async.** Every request-making surface works in both modes.
   `async = TRUE` returns a \[promise\]\[promises::promise\]; otherwise
   the table is returned directly. There is a single sync/async branch
@@ -181,6 +185,58 @@ chain[, .(instrument_name, mark_iv, bid_price, ask_price, open_interest, volume)
     #>                 <char>   <num>     <num>     <num>         <num>  <num>
     #> 1: BTC-31JUL26-40000-P    55.7    0.0024    0.0028         395.0    3.6
     #> 2: BTC-31JUL26-60000-C    78.5        NA    0.0002         168.6    0.0
+
+## Raw, lossless access
+
+The typed tables above are the analysis convenience; a byte-faithful
+archive wants the exchange’s own records untouched. Every typed method
+the scraper archives as bronze has a raw sibling that returns Deribit’s
+parsed JSON verbatim — the venue’s field names, the venue’s order, and a
+JSON `null` kept as R `NULL` (distinct from an absent field), with
+nothing invented.
+
+`get_option_chain_raw()` (and the general
+`get_book_summary_by_currency_raw()`) returns one named list per
+instrument, exactly as sent:
+
+``` r
+raw_chain <- md$get_option_chain_raw("BTC")
+
+# One instrument's record, verbatim — including the raw creation_timestamp the
+# typed table derives into `datetime` and drops:
+raw_chain[[1]][c("instrument_name", "creation_timestamp", "mark_iv", "bid_price")]
+```
+
+    #> $instrument_name
+    #> [1] "BTC-31JUL26-40000-P"
+    #> 
+    #> $creation_timestamp
+    #> [1] 1.7e+12
+    #> 
+    #> $mark_iv
+    #> [1] 55.7
+    #> 
+    #> $bid_price
+    #> [1] 0.0024
+
+`get_volatility_index_data_raw()` returns the raw
+`{ data, continuation }` object, exposing the `continuation` paging
+cursor the typed `get_volatility_index_data()` drops — feed it back as
+the next `end_timestamp` to page a range longer than one response:
+
+``` r
+dvol_raw <- md$get_volatility_index_data_raw(
+    "BTC",
+    start_timestamp = lubridate::ymd_hms("2023-11-01 00:00:00", tz = "UTC"),
+    end_timestamp = lubridate::ymd_hms("2023-11-08 00:00:00", tz = "UTC"),
+    resolution = "3600"
+)
+names(dvol_raw)
+length(dvol_raw$data)
+```
+
+    #> [1] "continuation" "data"        
+    #> [1] 3
 
 ## Asynchronous usage
 

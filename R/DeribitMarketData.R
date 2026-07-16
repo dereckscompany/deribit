@@ -240,6 +240,49 @@ DeribitMarketData <- R6::R6Class(
       ))
     },
 
+    #' @description Retrieve a DVOL window as the venue's own **raw object** — the
+    #'   parsed JSON `{ data, continuation }` exactly as Deribit returns it. This
+    #'   is the lossless counterpart to `get_volatility_index_data()`: that method
+    #'   returns tidy candle rows and drops the paging cursor, whereas this
+    #'   preserves both the raw `[timestamp_ms, open, high, low, close]` `data`
+    #'   rows and the `continuation` cursor Deribit returns when more history
+    #'   remains (its next `end_timestamp` in ms, or JSON `null` when the range is
+    #'   exhausted). A backfill pages a range longer than one response by feeding
+    #'   `continuation` back as the next `end_timestamp`.
+    #' @param currency (scalar<character>) the currency, e.g. `"BTC"`.
+    #' @param start_timestamp (class<POSIXct>) the window start (inclusive).
+    #' @param end_timestamp (class<POSIXct>) the window end (inclusive). Must not
+    #'   precede `start_timestamp`.
+    #' @param resolution (scalar<character>) the candle resolution, one of
+    #'   `DVOL_RESOLUTIONS` ("1", "60", "3600", "43200" seconds, or "1D" daily).
+    #' @return (list | promise<list>) the raw `{ data, continuation }` object, or
+    #'   a promise thereof.
+    get_volatility_index_data_raw = function(currency, start_timestamp, end_timestamp, resolution) {
+      assert_args_DeribitMarketData__get_volatility_index_data_raw(
+        currency,
+        start_timestamp,
+        end_timestamp,
+        resolution
+      )
+      private$.validate_choice(resolution, unlist(DVOL_RESOLUTIONS, use.names = FALSE), "resolution")
+      private$.require_window(start_timestamp, end_timestamp)
+      res <- private$.request(
+        endpoint = "/public/get_volatility_index_data",
+        query = list(
+          currency = currency,
+          start_timestamp = deribit_ms(start_timestamp),
+          end_timestamp = deribit_ms(end_timestamp),
+          resolution = resolution
+        ),
+        .parser = identity
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_DeribitMarketData__get_volatility_index_data_raw,
+        is_async = private$.is_async
+      ))
+    },
+
     #' @description Retrieve the funding-rate history for a perpetual over a
     #'   window.
     #' @param instrument_name (scalar<character>) the perpetual, e.g.
@@ -376,6 +419,36 @@ DeribitMarketData <- R6::R6Class(
       ))
     },
 
+    #' @description Retrieve the book summary for every live instrument of a
+    #'   currency as the venue's own **raw records** — the parsed JSON array
+    #'   exactly as Deribit returns it, in venue order, with every field preserved
+    #'   (including `creation_timestamp`, which the typed table derives away) and a
+    #'   JSON `null` kept distinct from an absent field. This is the lossless
+    #'   counterpart to `get_book_summary_by_currency()`: where that method returns
+    #'   a tidy typed `data.table`, this returns the untouched records a bronze
+    #'   passthrough archives verbatim. Each element is one instrument's book
+    #'   summary as a named list.
+    #' @param currency (scalar<character>) the currency, e.g. `"BTC"`.
+    #' @param kind (scalar<character> | NULL) the instrument-kind filter, one of
+    #'   `names(INSTRUMENT_KIND)` ("future", "option", "spot", "future_combo",
+    #'   "option_combo"); `NULL` returns every kind. Default `NULL`.
+    #' @return (list | promise<list>) the raw book-summary records (one named list
+    #'   per instrument), or a promise thereof.
+    get_book_summary_by_currency_raw = function(currency, kind = NULL) {
+      assert_args_DeribitMarketData__get_book_summary_by_currency_raw(currency, kind)
+      private$.validate_kind(kind)
+      res <- private$.request(
+        endpoint = "/public/get_book_summary_by_currency",
+        query = list(currency = currency, kind = kind),
+        .parser = identity
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_DeribitMarketData__get_book_summary_by_currency_raw,
+        is_async = private$.is_async
+      ))
+    },
+
     #' @description Retrieve the book summary for one instrument.
     #' @param instrument_name (scalar<character>) the instrument, e.g.
     #'   `"BTC-PERPETUAL"`.
@@ -405,6 +478,20 @@ DeribitMarketData <- R6::R6Class(
     #' @noassert
     get_option_chain = function(currency) {
       return(self$get_book_summary_by_currency(currency = currency, kind = INSTRUMENT_KIND$option))
+    },
+
+    #' @description Retrieve the option-chain snapshot for a currency as the
+    #'   venue's own **raw records** (the lossless counterpart to
+    #'   `get_option_chain()`): a convenience wrapper over
+    #'   `get_book_summary_by_currency_raw(currency, kind = "option")` — the one
+    #'   Deribit call the scraper's option-chain collector archives verbatim as
+    #'   bronze.
+    #' @param currency (scalar<character>) the currency, e.g. `"BTC"`.
+    #' @return (list | promise<list>) the raw option book-summary records (one
+    #'   named list per live option), or a promise thereof.
+    #' @noassert
+    get_option_chain_raw = function(currency) {
+      return(self$get_book_summary_by_currency_raw(currency = currency, kind = INSTRUMENT_KIND$option))
     }
   ),
   private = list(

@@ -1,6 +1,6 @@
 Package: deribit
 Title: API Wrapper to the Deribit Crypto Derivatives Exchange
-Version: 0.1.0
+Version: 0.2.0
 URL: https://dereckscompany.github.io/deribit,
     https://github.com/dereckscompany/deribit
 BugReports: https://github.com/dereckscompany/deribit/issues

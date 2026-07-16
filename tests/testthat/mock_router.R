@@ -87,7 +87,8 @@ box::use(
   list(pattern = "get_order_book", fixture = .fixtures$order_book),
   list(pattern = "get_index_price", fixture = .fixtures$index_price),
 
-  # ---- DVOL ----
+  # ---- DVOL (a paged ETH window carries a non-null continuation cursor) ----
+  list(match = .url_has("get_volatility_index_data", "currency=ETH"), fixture = .fixtures$dvol_paged),
   list(pattern = "get_volatility_index_data", fixture = .fixtures$dvol),
 
   # ---- Funding ----

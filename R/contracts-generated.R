@@ -207,6 +207,19 @@ assert_return_DeribitMarketData__get_volatility_index_data <- function(value) {
   return(value)
 }
 
+assert_args_DeribitMarketData__get_volatility_index_data_raw <- function(currency, start_timestamp, end_timestamp, resolution) {
+  assert_scalar_character(currency)
+  assert_class(start_timestamp, "POSIXct")
+  assert_class(end_timestamp, "POSIXct")
+  assert_scalar_character(resolution)
+  return(invisible(NULL))
+}
+
+assert_return_DeribitMarketData__get_volatility_index_data_raw <- function(value) {
+  assert_list(value)
+  return(value)
+}
+
 assert_args_DeribitMarketData__get_funding_rate_history <- function(instrument_name, start_timestamp, end_timestamp) {
   assert_scalar_character(instrument_name)
   assert_class(start_timestamp, "POSIXct")
@@ -329,6 +342,19 @@ assert_return_DeribitMarketData__get_book_summary_by_currency <- function(value)
   assert_double(value[["interest_rate"]])
   assert_double(value[["current_funding"]])
   assert_double(value[["funding_8h"]])
+  return(value)
+}
+
+assert_args_DeribitMarketData__get_book_summary_by_currency_raw <- function(currency, kind) {
+  assert_scalar_character(currency)
+  if (!is.null(kind)) {
+    assert_scalar_character(kind)
+  }
+  return(invisible(NULL))
+}
+
+assert_return_DeribitMarketData__get_book_summary_by_currency_raw <- function(value) {
+  assert_list(value)
   return(value)
 }
 
