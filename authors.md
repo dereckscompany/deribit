@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/dereckscompany/deribit/blob/v0.2.0/inst/CITATION)
+[`inst/CITATION`](https://github.com/dereckscompany/deribit/blob/master/inst/CITATION)
 
 Mezquita D (2026). *deribit: API Wrapper to the Deribit Crypto
 Derivatives Exchange*. R package version 0.2.0,
