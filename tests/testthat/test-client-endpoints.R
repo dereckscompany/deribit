@@ -106,6 +106,66 @@ test_that("book-summary methods and the option-chain convenience round-trip", {
   expect_identical(chain, opt)
 })
 
+test_that("get_book_summary_by_currency_raw is a lossless passthrough of the venue records", {
+  connectcore::local_mock_api(.mock_routes)
+  md <- DeribitMarketData$new()
+  raw <- md$get_book_summary_by_currency_raw("BTC", kind = "option")
+  typed <- md$get_book_summary_by_currency("BTC", kind = "option")
+
+  # A list of raw records, one per instrument, NOT a data.table.
+  expect_type(raw, "list")
+  expect_false(data.table::is.data.table(raw))
+  expect_length(raw, 2L)
+  expect_true(all(vapply(raw, is.list, logical(1L))))
+
+  # The venue's own creation_timestamp (raw epoch ms) survives verbatim — the
+  # typed table derives it into `datetime` and drops the raw field.
+  expect_identical(raw[[1L]]$creation_timestamp, 1700000000000)
+  expect_false("creation_timestamp" %in% names(typed))
+
+  # A JSON null is preserved as R NULL (distinct from an absent field), where the
+  # typed table collapses it to NA. The second option has null bid_price/mid_price.
+  expect_true("bid_price" %in% names(raw[[2L]]))
+  expect_null(raw[[2L]]$bid_price)
+  expect_null(raw[[2L]]$mid_price)
+
+  # No phantom columns: fields the venue never sends for an option
+  # (volume_notional, current_funding, funding_8h) are ABSENT from the raw
+  # records, whereas the typed table invents them as all-NA columns.
+  expect_false(any(c("volume_notional", "current_funding", "funding_8h") %in% names(raw[[1L]])))
+  expect_true(all(c("volume_notional", "current_funding", "funding_8h") %in% names(typed)))
+  expect_true(all(is.na(typed$volume_notional)))
+})
+
+test_that("get_option_chain_raw mirrors get_book_summary_by_currency_raw(kind = option)", {
+  connectcore::local_mock_api(.mock_routes)
+  md <- DeribitMarketData$new()
+  expect_identical(
+    md$get_option_chain_raw("BTC"),
+    md$get_book_summary_by_currency_raw("BTC", kind = "option")
+  )
+})
+
+test_that("get_volatility_index_data_raw exposes the continuation cursor and raw data rows", {
+  connectcore::local_mock_api(.mock_routes)
+  md <- DeribitMarketData$new()
+
+  # BTC window is exhausted: continuation is a preserved JSON null.
+  btc <- md$get_volatility_index_data_raw("BTC", .start, .end, resolution = "3600")
+  expect_type(btc, "list")
+  expect_true(all(c("data", "continuation") %in% names(btc)))
+  expect_null(btc$continuation)
+  expect_length(btc$data, 3L)
+
+  # ETH window has more history: the non-null continuation cursor survives, where
+  # the typed get_volatility_index_data() drops it entirely.
+  eth <- md$get_volatility_index_data_raw("ETH", .start, .end, resolution = "3600")
+  expect_identical(eth$continuation, 1699996400000)
+  expect_length(eth$data, 2L)
+  # Each raw data row is the venue's [timestamp_ms, o, h, l, c] array, untouched.
+  expect_identical(eth$data[[1L]][[1L]], 1700000000000)
+})
+
 test_that("a JSON-RPC error surfaces as a typed deribit_api_error_400 end-to-end", {
   connectcore::local_mock_api(.mock_routes)
   md <- DeribitMarketData$new()

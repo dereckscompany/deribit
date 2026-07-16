@@ -58,6 +58,26 @@ test_that("get_volatility_index_data async agrees with sync", {
   expect_equal(resolve_promise(p), sync)
 })
 
+test_that("get_book_summary_by_currency_raw async agrees with sync", {
+  skip_if_not_installed("promises")
+  skip_if_not_installed("later")
+  connectcore::local_mock_api(.mock_routes)
+  sync <- DeribitMarketData$new(async = FALSE)$get_book_summary_by_currency_raw("BTC", kind = "option")
+  p <- DeribitMarketData$new(async = TRUE)$get_book_summary_by_currency_raw("BTC", kind = "option")
+  expect_true(inherits(p, "promise"))
+  expect_equal(resolve_promise(p), sync)
+})
+
+test_that("get_volatility_index_data_raw async agrees with sync", {
+  skip_if_not_installed("promises")
+  skip_if_not_installed("later")
+  connectcore::local_mock_api(.mock_routes)
+  sync <- DeribitMarketData$new(async = FALSE)$get_volatility_index_data_raw("ETH", .start, .end, "3600")
+  p <- DeribitMarketData$new(async = TRUE)$get_volatility_index_data_raw("ETH", .start, .end, "3600")
+  expect_true(inherits(p, "promise"))
+  expect_equal(resolve_promise(p), sync)
+})
+
 test_that("an async JSON-RPC error rejects the promise", {
   skip_if_not_installed("promises")
   skip_if_not_installed("later")
