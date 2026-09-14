@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">deribit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,12 @@
       <small>Source: <a href="https://github.com/dereckscompany/deribit/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.1" id="deribit-021">deribit 0.2.1<a class="anchor" aria-label="anchor" href="#deribit-021"></a></h2>
+<p><strong>A regression test that guards against price data ever being truncated again.</strong> In plain English: on 2026-09-13 the fleet discovered that every Hyperliquid candle in the data lake had been stored to four decimal places for months, so a coin priced below a cent lost almost all of its information, and a strategy that ranks coins by calmness ranked them wrongly as a result. The cause was traced and proved NOT to be in the venue connector packages — this package’s parse path turns Deribit’s own JSON numbers into R numbers at full precision, with no truncation — it was a re-serialisation default in the data scraper, since fixed. This release adds a test that pins that correctness in place for Deribit specifically: if anyone later introduces <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">round()</a></code>, <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">signif()</a></code>, <code>sprintf("%.4f")</code>, <code>format(nsmall = )</code>, or a narrowing cast into a parse helper, the test fails immediately.</p>
+<ul><li>Added <code>tests/testthat/test-parse-precision.R</code>: drives <code>get_ticker()</code>, <code>get_book_summary_by_currency()</code> (the option-chain snapshot, mark price and implied volatility), and <code>get_funding_rate_history()</code> through the real public client, via synthetic high-precision JSON-RPC fixtures (authored as raw wire text, matching Deribit’s bare-JSON-number format) routed through the shared <code>connectcore</code> mock harness. Every numeric column is asserted <code>expect_identical()</code> (never tolerance-based) against <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code> of the fixture’s own decimal literal, and a big-integer-looking <code>instrument_name</code> is asserted to stay character and unchanged.</li>
+<li>No behaviour change: the parse path (<code><a href="https://dereckscompany.github.io/connectcore/reference/num_or_na.html" class="external-link">connectcore::num_or_na()</a></code> -&gt; <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code>, threaded through <code>R/helpers_parse.R</code>) was already correct and is untouched.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="deribit-020">deribit 0.2.0<a class="anchor" aria-label="anchor" href="#deribit-020"></a></h2>
 <p>Lossless raw accessors alongside the typed surface, for byte-faithful bronze archival.</p>

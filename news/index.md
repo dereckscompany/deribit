@@ -1,5 +1,39 @@
 # Changelog
 
+## deribit 0.2.1
+
+**A regression test that guards against price data ever being truncated
+again.** In plain English: on 2026-09-13 the fleet discovered that every
+Hyperliquid candle in the data lake had been stored to four decimal
+places for months, so a coin priced below a cent lost almost all of its
+information, and a strategy that ranks coins by calmness ranked them
+wrongly as a result. The cause was traced and proved NOT to be in the
+venue connector packages — this package’s parse path turns Deribit’s own
+JSON numbers into R numbers at full precision, with no truncation — it
+was a re-serialisation default in the data scraper, since fixed. This
+release adds a test that pins that correctness in place for Deribit
+specifically: if anyone later introduces
+[`round()`](https://rdrr.io/r/base/Round.html),
+[`signif()`](https://rdrr.io/r/base/Round.html), `sprintf("%.4f")`,
+`format(nsmall = )`, or a narrowing cast into a parse helper, the test
+fails immediately.
+
+- Added `tests/testthat/test-parse-precision.R`: drives `get_ticker()`,
+  `get_book_summary_by_currency()` (the option-chain snapshot, mark
+  price and implied volatility), and `get_funding_rate_history()`
+  through the real public client, via synthetic high-precision JSON-RPC
+  fixtures (authored as raw wire text, matching Deribit’s
+  bare-JSON-number format) routed through the shared `connectcore` mock
+  harness. Every numeric column is asserted `expect_identical()` (never
+  tolerance-based) against
+  [`as.numeric()`](https://rdrr.io/r/base/numeric.html) of the fixture’s
+  own decimal literal, and a big-integer-looking `instrument_name` is
+  asserted to stay character and unchanged.
+- No behaviour change: the parse path
+  ([`connectcore::num_or_na()`](https://dereckscompany.github.io/connectcore/reference/num_or_na.html)
+  -\> [`as.numeric()`](https://rdrr.io/r/base/numeric.html), threaded
+  through `R/helpers_parse.R`) was already correct and is untouched.
+
 ## deribit 0.2.0
 
 Lossless raw accessors alongside the typed surface, for byte-faithful
