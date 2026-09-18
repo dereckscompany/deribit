@@ -1,3 +1,11 @@
+# deribit 0.2.2
+
+Fix the rendered README: a cross-reference to the promises package was showing up as literal escaped brackets instead of a link.
+
+In plain English: the README described asynchronous calls using an R help-page cross-reference syntax that only resolves inside R's own help viewer. GitHub does not understand that syntax, so the rendered README on GitHub showed the literal text "[promise][promises::promise]" instead of a working link. This release replaces it with a plain markdown link, matching the fix already shipped in the hyperliquid and polymarket connectors.
+
+- README.Rmd: replaced the Rd-style `[promise][promises::promise]` cross-reference with a plain markdown link to https://rstudio.github.io/promises/, and re-rendered README.md via `scripts/BUILD.sh readme`.
+
 # deribit 0.2.1
 
 **A regression test that guards against price data ever being truncated again.** In plain English: on 2026-09-13 the fleet discovered that every Hyperliquid candle in the data lake had been stored to four decimal places for months, so a coin priced below a cent lost almost all of its information, and a strategy that ranks coins by calmness ranked them wrongly as a result. The cause was traced and proved NOT to be in the venue connector packages — this package's parse path turns Deribit's own JSON numbers into R numbers at full precision, with no truncation — it was a re-serialisation default in the data scraper, since fixed. This release adds a test that pins that correctness in place for Deribit specifically: if anyone later introduces `round()`, `signif()`, `sprintf("%.4f")`, `format(nsmall = )`, or a narrowing cast into a parse helper, the test fails immediately.

@@ -41,7 +41,7 @@ It is a faithful, low-level wrapper: it speaks Deribit's JSON-RPC 2.0 wire forma
 ## Design philosophy
 
 - **`data.table` by default, with a lossless escape hatch.** Every typed method returns one flat `data.table` (no list columns); measurement columns (and any field legitimately absent for a given instrument kind — an option's greeks, a perpetual's funding, a null bid) are typed nullable, structural columns strict. Where a byte-faithful archive needs the venue's own records instead of a tidy table, the `*_raw()` siblings return Deribit's parsed JSON untouched (see the raw, lossless access section below).
-- **Sync and async.** Every request-making surface works in both modes. `async = TRUE` returns a [promise][promises::promise]; otherwise the table is returned directly. There is a single sync/async branch point (inherited from `connectcore`).
+- **Sync and async.** Every request-making surface works in both modes. `async = TRUE` returns a [promise](https://rstudio.github.io/promises/); otherwise the table is returned directly. There is a single sync/async branch point (inherited from `connectcore`).
 - **Faithful field names.** Venue-native names are preserved and only snake_cased; nested objects (a ticker's `stats`/`greeks`) are flattened with the parent field as a prefix (`stats_high`, `greeks_delta`).
 - **Typed errors.** Every failure is a classed condition (`deribit_api_error`, `deribit_validation_error`) carrying structured fields — you branch on the type, never grep the message.
 
