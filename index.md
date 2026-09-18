@@ -51,9 +51,10 @@ authenticated surface, and the public endpoints need no API key.
   siblings return Deribit’s parsed JSON untouched (see the raw, lossless
   access section below).
 - **Sync and async.** Every request-making surface works in both modes.
-  `async = TRUE` returns a \[promise\]\[promises::promise\]; otherwise
-  the table is returned directly. There is a single sync/async branch
-  point (inherited from `connectcore`).
+  `async = TRUE` returns a
+  [promise](https://rstudio.github.io/promises/); otherwise the table is
+  returned directly. There is a single sync/async branch point
+  (inherited from `connectcore`).
 - **Faithful field names.** Venue-native names are preserved and only
   snake_cased; nested objects (a ticker’s `stats`/`greeks`) are
   flattened with the parent field as a prefix (`stats_high`,

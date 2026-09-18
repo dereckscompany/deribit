@@ -1,5 +1,23 @@
 # Changelog
 
+## deribit 0.2.2
+
+Fix the rendered README: a cross-reference to the promises package was
+showing up as literal escaped brackets instead of a link.
+
+In plain English: the README described asynchronous calls using an R
+help-page cross-reference syntax that only resolves inside R’s own help
+viewer. GitHub does not understand that syntax, so the rendered README
+on GitHub showed the literal text “\[promise\]\[promises::promise\]”
+instead of a working link. This release replaces it with a plain
+markdown link, matching the fix already shipped in the hyperliquid and
+polymarket connectors.
+
+- README.Rmd: replaced the Rd-style `[promise][promises::promise]`
+  cross-reference with a plain markdown link to
+  <https://rstudio.github.io/promises/>, and re-rendered README.md via
+  `scripts/BUILD.sh readme`.
+
 ## deribit 0.2.1
 
 **A regression test that guards against price data ever being truncated

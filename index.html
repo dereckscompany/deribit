@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">deribit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@
 <li>
 <strong><code>data.table</code> by default, with a lossless escape hatch.</strong> Every typed method returns one flat <code>data.table</code> (no list columns); measurement columns (and any field legitimately absent for a given instrument kind — an option’s greeks, a perpetual’s funding, a null bid) are typed nullable, structural columns strict. Where a byte-faithful archive needs the venue’s own records instead of a tidy table, the <code>*_raw()</code> siblings return Deribit’s parsed JSON untouched (see the raw, lossless access section below).</li>
 <li>
-<strong>Sync and async.</strong> Every request-making surface works in both modes. <code>async = TRUE</code> returns a [promise][promises::promise]; otherwise the table is returned directly. There is a single sync/async branch point (inherited from <code>connectcore</code>).</li>
+<strong>Sync and async.</strong> Every request-making surface works in both modes. <code>async = TRUE</code> returns a <a href="https://rstudio.github.io/promises/" class="external-link">promise</a>; otherwise the table is returned directly. There is a single sync/async branch point (inherited from <code>connectcore</code>).</li>
 <li>
 <strong>Faithful field names.</strong> Venue-native names are preserved and only snake_cased; nested objects (a ticker’s <code>stats</code>/<code>greeks</code>) are flattened with the parent field as a prefix (<code>stats_high</code>, <code>greeks_delta</code>).</li>
 <li>

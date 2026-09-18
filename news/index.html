@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">deribit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,9 +28,15 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/dereckscompany/deribit/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/dereckscompany/deribit/blob/v0.2.2/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.2" id="deribit-022">deribit 0.2.2<a class="anchor" aria-label="anchor" href="#deribit-022"></a></h2>
+<p>Fix the rendered README: a cross-reference to the promises package was showing up as literal escaped brackets instead of a link.</p>
+<p>In plain English: the README described asynchronous calls using an R help-page cross-reference syntax that only resolves inside R’s own help viewer. GitHub does not understand that syntax, so the rendered README on GitHub showed the literal text “[promise][promises::promise]” instead of a working link. This release replaces it with a plain markdown link, matching the fix already shipped in the hyperliquid and polymarket connectors.</p>
+<ul><li>README.Rmd: replaced the Rd-style <code>[promise][promises::promise]</code> cross-reference with a plain markdown link to <a href="https://rstudio.github.io/promises/" class="external-link uri">https://rstudio.github.io/promises/</a>, and re-rendered README.md via <code>scripts/BUILD.sh readme</code>.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1" id="deribit-021">deribit 0.2.1<a class="anchor" aria-label="anchor" href="#deribit-021"></a></h2>
 <p><strong>A regression test that guards against price data ever being truncated again.</strong> In plain English: on 2026-09-13 the fleet discovered that every Hyperliquid candle in the data lake had been stored to four decimal places for months, so a coin priced below a cent lost almost all of its information, and a strategy that ranks coins by calmness ranked them wrongly as a result. The cause was traced and proved NOT to be in the venue connector packages — this package’s parse path turns Deribit’s own JSON numbers into R numbers at full precision, with no truncation — it was a re-serialisation default in the data scraper, since fixed. This release adds a test that pins that correctness in place for Deribit specifically: if anyone later introduces <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">round()</a></code>, <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">signif()</a></code>, <code>sprintf("%.4f")</code>, <code>format(nsmall = )</code>, or a narrowing cast into a parse helper, the test fails immediately.</p>
