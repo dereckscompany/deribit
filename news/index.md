@@ -1,17 +1,34 @@
 # Changelog
 
+## deribit 0.2.3
+
+**A prose tidy-up, with no behaviour change.** This release removes the
+leftover “In plain terms”/“In plain English” scaffolding labels from the
+README and from four NEWS entries (0.2.2, 0.2.1, 0.2.0 and 0.1.0),
+keeping the plain-English sentence that followed each one exactly as it
+was. A full sweep for American spellings (the
+-ize/-or/-er/-ogue/-ence/-ll- families) found no hits — the repository’s
+prose was already written in British English throughout.
+
+- Removed 5 scaffolding labels across 2 files: README.Rmd (1) and
+  NEWS.md (4). DESCRIPTION carries the version bump.
+- 0 spelling changes: nothing matched the American-form sweep.
+- README.md regenerated from README.Rmd via `scripts/BUILD.sh readme`.
+  No code, identifiers, roxygen contracts, or generated `man/` pages
+  were touched.
+
 ## deribit 0.2.2
 
 Fix the rendered README: a cross-reference to the promises package was
 showing up as literal escaped brackets instead of a link.
 
-In plain English: the README described asynchronous calls using an R
-help-page cross-reference syntax that only resolves inside R’s own help
-viewer. GitHub does not understand that syntax, so the rendered README
-on GitHub showed the literal text “\[promise\]\[promises::promise\]”
-instead of a working link. This release replaces it with a plain
-markdown link, matching the fix already shipped in the hyperliquid and
-polymarket connectors.
+The README described asynchronous calls using an R help-page
+cross-reference syntax that only resolves inside R’s own help viewer.
+GitHub does not understand that syntax, so the rendered README on GitHub
+showed the literal text “\[promise\]\[promises::promise\]” instead of a
+working link. This release replaces it with a plain markdown link,
+matching the fix already shipped in the hyperliquid and polymarket
+connectors.
 
 - README.Rmd: replaced the Rd-style `[promise][promises::promise]`
   cross-reference with a plain markdown link to
@@ -21,9 +38,9 @@ polymarket connectors.
 ## deribit 0.2.1
 
 **A regression test that guards against price data ever being truncated
-again.** In plain English: on 2026-09-13 the fleet discovered that every
-Hyperliquid candle in the data lake had been stored to four decimal
-places for months, so a coin priced below a cent lost almost all of its
+again.** On 2026-09-13 the fleet discovered that every Hyperliquid
+candle in the data lake had been stored to four decimal places for
+months, so a coin priced below a cent lost almost all of its
 information, and a strategy that ranks coins by calmness ranked them
 wrongly as a result. The cause was traced and proved NOT to be in the
 venue connector packages — this package’s parse path turns Deribit’s own
@@ -57,13 +74,13 @@ fails immediately.
 Lossless raw accessors alongside the typed surface, for byte-faithful
 bronze archival.
 
-In plain English: the typed `data.table` methods are the right default
-for analysis, but a raw-data archive wants the exchange’s own records
-untouched — every field, in the venue’s order, with a genuine “no value”
-(a JSON `null`) kept distinct from “field not sent”. This release adds
-raw siblings for the two surfaces the scraper’s `deribit-options`
-collector archives, so the archive stores exactly what Deribit sent and
-the tidy tables remain the analysis convenience.
+The typed `data.table` methods are the right default for analysis, but a
+raw-data archive wants the exchange’s own records untouched — every
+field, in the venue’s order, with a genuine “no value” (a JSON `null`)
+kept distinct from “field not sent”. This release adds raw siblings for
+the two surfaces the scraper’s `deribit-options` collector archives, so
+the archive stores exactly what Deribit sent and the tidy tables remain
+the analysis convenience.
 
 - `get_book_summary_by_currency_raw()` and its option-chain convenience
   `get_option_chain_raw()`: the parsed JSON array of book-summary
@@ -92,12 +109,12 @@ the tidy tables remain the analysis convenience.
 Initial release: the Deribit crypto-derivatives exchange in the fleet’s
 connector idiom — public market data only.
 
-In plain English: Deribit is where the crypto options market lives, and
-this package fetches its public market data — the option and futures
-universe, live quotes and order books, the DVOL volatility index (our
-regime dial), perpetual funding rates, recent trades, and the whole
-option-chain snapshot — through one typed, tested interface that works
-both synchronously and asynchronously, so our research and any future
+Deribit is where the crypto options market lives, and this package
+fetches its public market data — the option and futures universe, live
+quotes and order books, the DVOL volatility index (our regime dial),
+perpetual funding rates, recent trades, and the whole option-chain
+snapshot — through one typed, tested interface that works both
+synchronously and asynchronously, so our research and any future
 strategy can consume Deribit data exactly the way it consumes every
 other exchange’s. There is no trading and no login in this phase;
 everything here is the public, keyless surface.
