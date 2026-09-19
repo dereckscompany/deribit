@@ -1,5 +1,36 @@
 # Changelog
 
+## deribit 0.2.4
+
+**The README now follows the same shape as every other package in the
+fleet, so a reader who knows one package’s documentation already knows
+where to look in this one.** This is a documentation-only release; no
+code path, argument, column, or API-facing string changed. The README’s
+sections were reordered and two were added into the fleet’s canonical
+shape (owner ruling 20, 2026-09-18): plain-English lead, technical
+overview, design philosophy, installation, per-surface usage,
+asynchronous usage, error handling, documentation, citation, licence.
+
+- Lead paragraph: the opening sentence is now bold, matching the fleet’s
+  unlabelled bold-lead-plus-paragraph convention; the wording is
+  unchanged.
+- Merged `## What this is` into `## Technical overview`: both sections
+  described what the package covers, so the “What this is” prose now
+  follows the technical-overview paragraph under one heading, wording
+  unchanged.
+- `## Quick start` was omitted: the public endpoints need no credentials
+  and no separate onboarding step exists beyond constructing the client,
+  which the first usage section (`## The instrument universe`) already
+  shows as its first line.
+- New `## Documentation` section: links the rendered pkgdown site and
+  `NEWS.md`; there is no `vignettes/` directory to list.
+- New `## Citation` section: a “Cite as” line built only from
+  `DESCRIPTION` (`Authors@R`, `Title`, `Version`), with the year taken
+  from this entry.
+- New `## Licence` section: the README previously had none; it now
+  states “MIT © Dereck Mezquita”, matching the `LICENSE` file and
+  `DESCRIPTION`’s `License: MIT`.
+
 ## deribit 0.2.3
 
 **A prose tidy-up, with no behaviour change.** This release removes the

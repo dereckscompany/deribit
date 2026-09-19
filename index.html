@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">deribit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,15 +48,11 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="deribit">deribit<a class="anchor" aria-label="anchor" href="#deribit"></a>
 </h1></div>
-<p>Deribit is the world’s biggest exchange for crypto options — contracts that are essentially bets on how much the price of Bitcoin or Ether will swing. Because so much of that activity happens in one place, it is the best window into what traders collectively expect the market to do next, including a single headline gauge, the DVOL index, that summarises how nervous or calm the options market is. This package pulls Deribit’s public market data — the list of tradable contracts, live prices and order books, that volatility index, perpetual funding costs, and recent trades — and returns it as clean tables you can work with in R. It reads public data only: there is no trading and no login or API key required. It reports the exchange’s numbers faithfully and leaves the interpretation to you.</p>
+<p><strong>Deribit is the world’s biggest exchange for crypto options — contracts that are essentially bets on how much the price of Bitcoin or Ether will swing.</strong> Because so much of that activity happens in one place, it is the best window into what traders collectively expect the market to do next, including a single headline gauge, the DVOL index, that summarises how nervous or calm the options market is. This package pulls Deribit’s public market data — the list of tradable contracts, live prices and order books, that volatility index, perpetual funding costs, and recent trades — and returns it as clean tables you can work with in R. It reads public data only: there is no trading and no login or API key required. It reports the exchange’s numbers faithfully and leaves the interpretation to you.</p>
 <div class="section level2">
 <h2 id="technical-overview">Technical overview<a class="anchor" aria-label="anchor" href="#technical-overview"></a>
 </h2>
 <p>R API wrapper to the <a href="https://www.deribit.com" class="external-link">Deribit</a> crypto options and derivatives exchange, supporting both synchronous and asynchronous (promise based) operations. Provides an R6 market-data client for the public JSON-RPC endpoints — instruments, ticker, order book, index price, DVOL volatility index, funding rates, trades, and option-chain book summaries — built on the shared <a href="https://github.com/dereckscompany/connectcore" class="external-link">connectcore</a> transport base.</p>
-</div>
-<div class="section level2">
-<h2 id="what-this-is">What this is<a class="anchor" aria-label="anchor" href="#what-this-is"></a>
-</h2>
 <p>Deribit is where the crypto <strong>options</strong> market lives — the deepest venue for BTC and ETH options, the perpetual and dated futures alongside them, and the <strong>DVOL</strong> volatility index that the whole desk watches as a regime dial. This package gives you Deribit’s public market data as tidy <code>data.table</code>s: the instrument universe, live quotes and order books, DVOL candles, perpetual funding, recent trades, and the full option-chain snapshot.</p>
 <p>It is a faithful, low-level wrapper: it speaks Deribit’s JSON-RPC 2.0 wire format and returns clean tables, preserving the venue’s own field names (only snake_cased), but it does not editorialise the data. <strong>Phase 1 is public market data only</strong> — there is no trading and no authenticated surface, and the public endpoints need no API key.</p>
 </div>
@@ -239,6 +235,26 @@
 <span><span class="op">)</span></span>
 <span><span class="va">result</span></span></code></pre></div>
 <div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co">#&gt; [1] "caught: Invalid resolution '99'. Valid values: 1, 60, 3600, 43200, 1D."</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
+<p>The rendered reference site is at <a href="https://dereckscompany.github.io/deribit">dereckscompany.github.io/deribit</a>.</p>
+<p>The full release history is in <a href="NEWS.html"><code>NEWS.md</code></a>.</p>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<p>Cite as:</p>
+<blockquote>
+<p>Mezquita, D. (2026). deribit: API Wrapper to the Deribit Crypto Derivatives Exchange. R package version 0.2.4. <a href="https://github.com/dereckscompany/deribit" class="external-link uri">https://github.com/dereckscompany/deribit</a>.</p>
+</blockquote>
+<p>Author: Dereck Mezquita — <a href="https://orcid.org/0000-0002-9307-6762" class="external-link">ORCID: 0000-0002-9307-6762</a></p>
+</div>
+<div class="section level2">
+<h2 id="licence">Licence<a class="anchor" aria-label="anchor" href="#licence"></a>
+</h2>
+<p>MIT © Dereck Mezquita</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">deribit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,9 +28,20 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/dereckscompany/deribit/blob/v0.2.3/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/dereckscompany/deribit/blob/v0.2.4/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.4" id="deribit-024">deribit 0.2.4<a class="anchor" aria-label="anchor" href="#deribit-024"></a></h2>
+<p><strong>The README now follows the same shape as every other package in the fleet, so a reader who knows one package’s documentation already knows where to look in this one.</strong> This is a documentation-only release; no code path, argument, column, or API-facing string changed. The README’s sections were reordered and two were added into the fleet’s canonical shape (owner ruling 20, 2026-09-18): plain-English lead, technical overview, design philosophy, installation, per-surface usage, asynchronous usage, error handling, documentation, citation, licence.</p>
+<ul><li>Lead paragraph: the opening sentence is now bold, matching the fleet’s unlabelled bold-lead-plus-paragraph convention; the wording is unchanged.</li>
+<li>Merged <code>## What this is</code> into <code>## Technical overview</code>: both sections described what the package covers, so the “What this is” prose now follows the technical-overview paragraph under one heading, wording unchanged.</li>
+<li>
+<code>## Quick start</code> was omitted: the public endpoints need no credentials and no separate onboarding step exists beyond constructing the client, which the first usage section (<code>## The instrument universe</code>) already shows as its first line.</li>
+<li>New <code>## Documentation</code> section: links the rendered pkgdown site and <code>NEWS.md</code>; there is no <code>vignettes/</code> directory to list.</li>
+<li>New <code>## Citation</code> section: a “Cite as” line built only from <code>DESCRIPTION</code> (<code>Authors@R</code>, <code>Title</code>, <code>Version</code>), with the year taken from this entry.</li>
+<li>New <code>## Licence</code> section: the README previously had none; it now states “MIT © Dereck Mezquita”, matching the <code>LICENSE</code> file and <code>DESCRIPTION</code>’s <code>License: MIT</code>.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.3" id="deribit-023">deribit 0.2.3<a class="anchor" aria-label="anchor" href="#deribit-023"></a></h2>
 <p><strong>A prose tidy-up, with no behaviour change.</strong> This release removes the leftover “In plain terms”/“In plain English” scaffolding labels from the README and from four NEWS entries (0.2.2, 0.2.1, 0.2.0 and 0.1.0), keeping the plain-English sentence that followed each one exactly as it was. A full sweep for American spellings (the -ize/-or/-er/-ogue/-ence/-ll- families) found no hits — the repository’s prose was already written in British English throughout.</p>

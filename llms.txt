@@ -1,11 +1,11 @@
 # deribit
 
-Deribit is the world’s biggest exchange for crypto options — contracts
+**Deribit is the world’s biggest exchange for crypto options — contracts
 that are essentially bets on how much the price of Bitcoin or Ether will
-swing. Because so much of that activity happens in one place, it is the
-best window into what traders collectively expect the market to do next,
-including a single headline gauge, the DVOL index, that summarises how
-nervous or calm the options market is. This package pulls Deribit’s
+swing.** Because so much of that activity happens in one place, it is
+the best window into what traders collectively expect the market to do
+next, including a single headline gauge, the DVOL index, that summarises
+how nervous or calm the options market is. This package pulls Deribit’s
 public market data — the list of tradable contracts, live prices and
 order books, that volatility index, perpetual funding costs, and recent
 trades — and returns it as clean tables you can work with in R. It reads
@@ -23,8 +23,6 @@ price, DVOL volatility index, funding rates, trades, and option-chain
 book summaries — built on the shared
 [connectcore](https://github.com/dereckscompany/connectcore) transport
 base.
-
-## What this is
 
 Deribit is where the crypto **options** market lives — the deepest venue
 for BTC and ETH options, the perpetual and dated futures alongside them,
@@ -309,6 +307,29 @@ result
 ``` R
 #> [1] "caught: Invalid resolution '99'. Valid values: 1, 60, 3600, 43200, 1D."
 ```
+
+## Documentation
+
+The rendered reference site is at
+[dereckscompany.github.io/deribit](https://dereckscompany.github.io/deribit).
+
+The full release history is in
+[`NEWS.md`](https://dereckscompany.github.io/deribit/NEWS.md).
+
+## Citation
+
+Cite as:
+
+> Mezquita, D. (2026). deribit: API Wrapper to the Deribit Crypto
+> Derivatives Exchange. R package version 0.2.4.
+> <https://github.com/dereckscompany/deribit>.
+
+Author: Dereck Mezquita — [ORCID:
+0000-0002-9307-6762](https://orcid.org/0000-0002-9307-6762)
+
+## Licence
+
+MIT © Dereck Mezquita
 
 # Package index
 
