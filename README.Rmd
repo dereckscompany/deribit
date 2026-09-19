@@ -26,13 +26,11 @@ local_mock_api(.mock_routes)
 
 # deribit
 
-Deribit is the world's biggest exchange for crypto options — contracts that are essentially bets on how much the price of Bitcoin or Ether will swing. Because so much of that activity happens in one place, it is the best window into what traders collectively expect the market to do next, including a single headline gauge, the DVOL index, that summarises how nervous or calm the options market is. This package pulls Deribit's public market data — the list of tradable contracts, live prices and order books, that volatility index, perpetual funding costs, and recent trades — and returns it as clean tables you can work with in R. It reads public data only: there is no trading and no login or API key required. It reports the exchange's numbers faithfully and leaves the interpretation to you.
+**Deribit is the world's biggest exchange for crypto options — contracts that are essentially bets on how much the price of Bitcoin or Ether will swing.** Because so much of that activity happens in one place, it is the best window into what traders collectively expect the market to do next, including a single headline gauge, the DVOL index, that summarises how nervous or calm the options market is. This package pulls Deribit's public market data — the list of tradable contracts, live prices and order books, that volatility index, perpetual funding costs, and recent trades — and returns it as clean tables you can work with in R. It reads public data only: there is no trading and no login or API key required. It reports the exchange's numbers faithfully and leaves the interpretation to you.
 
 ## Technical overview
 
 R API wrapper to the [Deribit](https://www.deribit.com) crypto options and derivatives exchange, supporting both synchronous and asynchronous (promise based) operations. Provides an R6 market-data client for the public JSON-RPC endpoints — instruments, ticker, order book, index price, DVOL volatility index, funding rates, trades, and option-chain book summaries — built on the shared [connectcore](https://github.com/dereckscompany/connectcore) transport base.
-
-## What this is
 
 Deribit is where the crypto **options** market lives — the deepest venue for BTC and ETH options, the perpetual and dated futures alongside them, and the **DVOL** volatility index that the whole desk watches as a regime dial. This package gives you Deribit's public market data as tidy `data.table`s: the instrument universe, live quotes and order books, DVOL candles, perpetual funding, recent trades, and the full option-chain snapshot.
 
@@ -179,3 +177,21 @@ result <- tryCatch(
 )
 result
 ```
+
+## Documentation
+
+The rendered reference site is at [dereckscompany.github.io/deribit](https://dereckscompany.github.io/deribit).
+
+The full release history is in [`NEWS.md`](NEWS.md).
+
+## Citation
+
+Cite as:
+
+> Mezquita, D. (2026). deribit: API Wrapper to the Deribit Crypto Derivatives Exchange. R package version 0.2.4. https://github.com/dereckscompany/deribit.
+
+Author: Dereck Mezquita — [ORCID: 0000-0002-9307-6762](https://orcid.org/0000-0002-9307-6762)
+
+## Licence
+
+MIT © Dereck Mezquita
