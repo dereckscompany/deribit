@@ -1,8 +1,8 @@
 # deribit 0.2.3
 
-**A prose tidy-up, with no behaviour change.** This release removes the leftover "In plain terms"/"In plain English" scaffolding labels from the README and from three NEWS entries, keeping the plain-English sentence that followed each one exactly as it was. A full sweep for American spellings (the -ize/-or/-er/-ogue/-ence/-ll- families) found no hits — the repository's prose was already written in British English throughout.
+**A prose tidy-up, with no behaviour change.** This release removes the leftover "In plain terms"/"In plain English" scaffolding labels from the README and from four NEWS entries (0.2.2, 0.2.1, 0.2.0 and 0.1.0), keeping the plain-English sentence that followed each one exactly as it was. A full sweep for American spellings (the -ize/-or/-er/-ogue/-ence/-ll- families) found no hits — the repository's prose was already written in British English throughout.
 
-- Removed 5 scaffolding labels across 2 files: README.Rmd (1) and NEWS.md (4).
+- Removed 5 scaffolding labels across 2 files: README.Rmd (1) and NEWS.md (4). DESCRIPTION carries the version bump.
 - 0 spelling changes: nothing matched the American-form sweep.
 - README.md regenerated from README.Rmd via `scripts/BUILD.sh readme`. No code, identifiers, roxygen contracts, or generated `man/` pages were touched.
 
